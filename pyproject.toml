@@ -1,0 +1,10 @@
+[project]
+name = "p2f-portal"
+version = "0.0.1"
+description = "The Streamlit based data portal of the Past to Future project. "
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "python-dotenv>=1.1.0",
+    "streamlit>=1.45.0",
+]
