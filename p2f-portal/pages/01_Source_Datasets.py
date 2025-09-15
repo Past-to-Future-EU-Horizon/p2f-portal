@@ -1,6 +1,8 @@
 from assets import disclosure_text
 import streamlit as st
 
+st.set_page_config(layout="wide")
+
 st.logo("./assets/P2F_text_transparent_MR.png")
 st.image("./assets/P2F_text_transparent_MR.png")
 st.title("Explore Source Datasets")

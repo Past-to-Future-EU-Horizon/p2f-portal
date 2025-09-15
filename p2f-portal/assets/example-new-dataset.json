@@ -1,0 +1,130 @@
+{
+  "creators": [
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/01ryk1543",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "University of Southampton"
+        },
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Yang",
+      "givenName": "Zifei",
+      "name": "Yang, Zifei",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0003-3350-6385",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Lear",
+      "givenName": "Caroline",
+      "name": "Lear, Caroline",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-7533-4430",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "familyName": "Slater-Lewis",
+      "givenName": "Sophie",
+      "name": "Slater-Lewis, Sophie",
+      "nameIdentifiers": [],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Thomas-Sparkes",
+      "givenName": "Amy",
+      "name": "Thomas-Sparkes, Amy",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-2943-7586",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2025-07-07",
+      "dateType": "Issued"
+    },
+    {
+      "date": "2025-09-15",
+      "dateType": "Updated"
+    }
+  ],
+  "descriptions": [
+    {
+      "description": "The M2 glaciation is a prominent event in the benthic oxygen isotope stack around 3.3 million years ago, and has often been thought of as an early but failed initiation of Northern Hemisphere glaciation. However, recent work has cast doubt on this assumption, and suggested that the \u03b418O signal reflects predominantly cooling of deep waters, not growth of continental ice. The\u00a0Melonis\u00a0spp. \u03b418O and Mg/Ca approach was improved by looking into the effects of test size of\u00a0Melonis\u00a0on both stable isotope (\u03b418O, \u03b413C) and trace metal composations. Applied the improved approach at Atlantic ODP Site 982 and Pacific ODP Site 1241, a dynamic cryosphere during M2 glaciation, and its intriguing relationship with ocean temperature, circulation changes, and pCO2 was revealed.",
+      "descriptionType": "Abstract"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://zenodo.org/records/16961927",
+      "identifierType": "URL"
+    },
+    {
+      "identifier": "10.6084/m9.figshare.29497142.v1",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "oai:zenodo.org:16961927",
+      "identifierType": "oai"
+    }
+  ],
+  "publicationYear": "2025",
+  "publisher": "Zenodo",
+  "relatedIdentifiers": [
+    {
+      "relatedIdentifier": "https://zenodo.org/communities/past-to-future-eu-horizon/",
+      "relatedIdentifierType": "URL",
+      "relationType": "IsPartOf"
+    }
+  ],
+  "rightsList": [
+    {
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "cc-by-4.0",
+      "rightsIdentifierScheme": "spdx",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode"
+    }
+  ],
+  "schemaVersion": "http://datacite.org/schema/kernel-4",
+  "titles": [
+    {
+      "title": "Muti-proxies records at mid-Pliocene (MIS M2) of benthic foraminifera Melonis spp."
+    }
+  ],
+  "types": {
+    "resourceType": "",
+    "resourceTypeGeneral": "Dataset"
+  }
+}

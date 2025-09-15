@@ -1,0 +1,220 @@
+{
+  "creators": [
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/01ryk1543",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "University of Southampton"
+        },
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Yang",
+      "givenName": "Zifei",
+      "name": "Yang, Zifei",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0003-3350-6385",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Lear",
+      "givenName": "Caroline",
+      "name": "Lear, Caroline",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-7533-4430",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Barker",
+      "givenName": "Stephen",
+      "name": "Barker, Stephen",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0001-7870-6431",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/024mrxd33",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "University of Leeds"
+        },
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        },
+        {
+          "affiliationIdentifier": "https://ror.org/05v62cm79",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "University of Reading"
+        }
+      ],
+      "familyName": "Elsey",
+      "givenName": "Jonathan",
+      "name": "Elsey, Jonathan",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-8321-0358",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "familyName": "Slater",
+      "givenName": "Sophie",
+      "name": "Slater, Sophie",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0003-0120-6732",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "familyName": "Gasson",
+      "givenName": "Edward",
+      "name": "Gasson, Edward",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0003-4653-6217",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/05vt9qd57",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Rutgers, The State University of New Jersey"
+        }
+      ],
+      "familyName": "Rosenthal",
+      "givenName": "Yair",
+      "name": "Rosenthal, Yair",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-7546-6011",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    },
+    {
+      "affiliation": [
+        {
+          "affiliationIdentifier": "https://ror.org/03kk7td41",
+          "affiliationIdentifierScheme": "ROR",
+          "name": "Cardiff University"
+        }
+      ],
+      "familyName": "Thomas-Sparkes",
+      "givenName": "Amy",
+      "name": "Thomas-Sparkes, Amy",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-2943-7586",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ],
+      "nameType": "Personal"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2025-08-16",
+      "dateType": "Issued"
+    },
+    {
+      "date": "2025-09-15",
+      "dateType": "Updated"
+    }
+  ],
+  "descriptions": [
+    {
+      "description": "The extent of ice growth during the Pliocene M2 glaciation (~3.3 Ma) has been\u00a0called into question, with benthic foraminiferal oxygen isotope records\u00a0interpreted primarily as a cooling signal. Here we improve the benthic foraminiferal Mg/Ca paleothermometer, allowing bottom water temperature\u00a0reconstructions with a precision of \u00b10.2-0.3\u00b0C (1 s.d.). Applying this approach\u00a0to M2 implies a significant increase in ice volume (~55m SLE) that was more\u00a0tightly coupled to a drop in CO2 than to ocean temperature. We suggest that the M2 glaciation was driven by a reduction in northern hemisphere poleward\u00a0heat transport, and amplified by a reduction in southern hemisphere poleward\u00a0heat transport caused by restriction of the Indonesian Seaway. The cryosphere\u00a0growth drove the atmospheric CO2 decrease, which likely contributed to the\u00a0overall magnitude of ice growth. These results demonstrate the sensitivity of\u00a0the cryosphere to changes in ocean heat transport in a similar to modern\u00a0climate.",
+      "descriptionType": "Abstract"
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "https://zenodo.org/records/16961707",
+      "identifierType": "URL"
+    },
+    {
+      "identifier": "10.1038/s41467-025-62446-x",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "oai:zenodo.org:16961707",
+      "identifierType": "oai"
+    }
+  ],
+  "publicationYear": "2025",
+  "publisher": "Zenodo",
+  "relatedIdentifiers": [
+    {
+      "relatedIdentifier": "https://zenodo.org/communities/past-to-future-eu-horizon/",
+      "relatedIdentifierType": "URL",
+      "relationType": "IsPartOf"
+    },
+    {
+      "relatedIdentifier": "2041-1723",
+      "relatedIdentifierType": "ISSN",
+      "relationType": "IsPartOf",
+      "resourceTypeGeneral": "Collection"
+    }
+  ],
+  "rightsList": [
+    {
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "cc-by-4.0",
+      "rightsIdentifierScheme": "spdx",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode"
+    }
+  ],
+  "schemaVersion": "http://datacite.org/schema/kernel-4",
+  "titles": [
+    {
+      "title": "Major sea level fall during the Pliocene M2 glaciation"
+    }
+  ],
+  "types": {
+    "resourceType": "",
+    "resourceTypeGeneral": "JournalArticle"
+  }
+}
