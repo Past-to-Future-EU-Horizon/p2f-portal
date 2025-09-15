@@ -2,12 +2,13 @@ from assets import disclosure_text
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
+import plotly.express as px
 import pandas as pd
 import json
 
 st.set_page_config(layout="wide")
 
-st.logo("./assets/P2F_text_transparent_MR.png")
+st.logo("./assets/P2F_text_transparent_MR.png", size="large")
 st.image("./assets/P2F_text_transparent_MR.png")
 st.title("Explore Dataset in Detail")
 
@@ -36,6 +37,13 @@ if dataset_id == "example":
                                 options=ddf.keys(), 
                                 default=list(ddf.keys())[0])
     st.dataframe(ddf[sheet_selection])
+    column_selection = st.pills("Select a column to plot", 
+                                [x for x in ddf[sheet_selection].columns])
+    
+    if column_selection: 
+        plot = px.scatter(ddf[sheet_selection][column_selection])
+        st.plotly_chart(plot)
+
     site_map = folium.Map([31.68, -51.156], zoom_start=2)
     site_982 = folium.Marker(location=[57.517, -15.867], popup="ODP Site 982").add_to(site_map)
     site_1241 = folium.Marker([5.843, -86.445], popup="ODP Site 1241").add_to(site_map)

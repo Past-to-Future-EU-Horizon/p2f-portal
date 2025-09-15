@@ -8,6 +8,7 @@ dependencies = [
     "furl>=2.1.4",
     "openpyxl>=3.1.5",
     "p2f-client-py",
+    "plotly>=6.3.0",
     "python-dotenv>=1.1.0",
     "streamlit>=1.45.0",
     "streamlit-folium>=0.25.1",
