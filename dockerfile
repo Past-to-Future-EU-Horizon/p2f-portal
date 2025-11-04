@@ -12,4 +12,5 @@ RUN --mount=type=cache,target=/root/.cache/ uv sync --locked
 
 ENV PATH="/p2f/portal/.venv/bin/:$PATH"
 
-CMD [ "streamlit", "run", "/p2f-api/Past_2_Future_Portal.py" ]
+# CMD ["/bin/bash"]
+CMD [ "streamlit", "run", "./p2f-portal/Past_2_Future_Portal.py" ]
