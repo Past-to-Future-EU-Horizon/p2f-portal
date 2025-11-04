@@ -1,8 +1,21 @@
 [client]
-showErrorDetails = "full"
+showErrorDetails = "none"
+toolbarMode = "minimal"
 
 [theme]
 primaryColor = "#db691e"
 backgroundColor = "#bfd3c1"
 secondaryBackgroundColor="#68a691"
 textColor="#000000"
+
+[runner]
+magicEnabled = false
+
+[server]
+showEmailPrompt = false
+runOnSave = false
+port = 8082
+
+[browswer]
+gatherUsageStats = false
+serverPort = 443
