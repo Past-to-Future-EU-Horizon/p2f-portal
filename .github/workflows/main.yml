@@ -1,0 +1,45 @@
+name: "Build and deploy containers"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  packages: write
+  contents: read
+  statuses: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ghcr.io/Past-to-Future-EU-Horizon/p2f_portal
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Build and push container
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+              src_dir=${{ matrix.image.source_dir }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
