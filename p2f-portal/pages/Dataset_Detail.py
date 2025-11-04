@@ -8,11 +8,11 @@ import json
 
 st.set_page_config(layout="wide")
 
-st.logo("./assets/P2F_text_transparent_MR.png", size="large")
-st.image("./assets/P2F_text_transparent_MR.png")
+st.logo("./p2f-portal/assets/P2F_text_transparent_MR.png", size="large")
+st.image("./p2f-portal/assets/P2F_text_transparent_MR.png")
 st.title("Explore Dataset in Detail")
 
-st.sidebar.image("./assets/EN_FundedbytheEU_RGB_POS.png")
+st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
 query_params = st.query_params
@@ -23,7 +23,7 @@ else:
     dataset_id = "example"
 
 if dataset_id == "example":
-    with open("./assets/example-new-dataset.json", "r") as f:
+    with open("./p2f-portal/assets/example-new-dataset.json", "r") as f:
         r = f.read()
     example_json = json.loads(r)
     # st.text(example_json)
@@ -32,7 +32,7 @@ if dataset_id == "example":
     st.markdown(f"*{'; '.join(creators_list)}*")
     st.text(example_json['descriptions'][0]['description'])
 
-    ddf = pd.read_excel("./assets/example-new-dataset.xlsx", sheet_name=None)
+    ddf = pd.read_excel("./p2f-portal/assets/example-new-dataset.xlsx", sheet_name=None)
     sheet_selection = st.pills("Select a data sheet",
                                 options=ddf.keys(), 
                                 default=list(ddf.keys())[0])

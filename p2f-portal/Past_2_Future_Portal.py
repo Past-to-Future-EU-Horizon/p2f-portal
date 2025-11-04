@@ -3,11 +3,11 @@ import streamlit as st
 
 st.set_page_config(layout="wide")
 
-st.logo("./assets/P2F_text_transparent_MR.png")
-st.image("./assets/P2F_text_transparent_MR.png")
+st.logo("./p2f-portal/assets/P2F_text_transparent_MR.png")
+st.image("./p2f-portal/assets/P2F_text_transparent_MR.png")
 st.title("Welcome to the Past 2 Future Data Portal")
 
-st.sidebar.image("./assets/EN_FundedbytheEU_RGB_POS.png")
+st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
 
