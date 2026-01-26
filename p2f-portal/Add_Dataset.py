@@ -1,4 +1,4 @@
-from p2f_client import p2f_client
+from p2f_client.p2f_client import P2F_Client
 from p2f_pydantic.datasets import Datasets
 import streamlit as st
 import requests
@@ -7,7 +7,19 @@ from datetime import datetime
 # import json
 import pathlib
 
-st.set_page_config(page_title="New dataset",
+if "parent_id" in st.query_params.keys():
+    temp_client = P2F_Client(hostname="localhost", port=8000, https=False)
+    st.session_state["parent_info"] = temp_client.datasets.get_remote_dataset(dataset_id=st.query_params["parent_id"])
+    del temp_client
+if "dataset_id" in st.query_params.keys():
+    if st.query_params["dataset_id"] == "new":
+        dmode = "New"
+    else: 
+        dmode = "Edit"
+        temp_client = P2F_Client(hostname="localhost", port=8000, https=False)
+        st.session_state["existing_data"] = temp_client.datasets.get_remote_dataset(dataset_id=st.query_params["dataset_id"])
+
+st.set_page_config(page_title=f"{dmode} dataset",
                    page_icon="➕",
                    layout="wide")
 
@@ -53,13 +65,27 @@ def get_url_form_data():
     st.session_state["intermediate_title"] = intermediate_dataset_title
     st.session_state["intermediate_pub_date"] = intermediate_dataset_publication_date
 
+def submit_new_dataset():
+    stss = st.session_state
+    new_dataset = Datasets(doi=stss["url_form_url"],
+                           title=stss["main_form_dataset_title"],
+                           publication_date=stss["main_form_publication_date"],
+                           is_sub_dataset=False,
+                           is_new_p2f=stss["main_form_original_p2f"])
+    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client.datasets.upload_dataset(new_dataset)
+    
+def add_sub_dataset():
+    st.session_state["subdataset_list"].append(st.session_state[f"main_form_subdataset_{st.session_state['subdataset_counter']:03}"])
+    
+
 with st.form(key="url_form"):
     st.write("🥬 Let us begin")
     st.text_input("What is the dataset URL?", 
                   key="url_form_url")
     st.form_submit_button("Submit", on_click=get_url_form_data)
 
-st.code(st.session_state)
+# st.code(st.session_state)
 
 if st.session_state["FormSubmitter:url_form-Submit"]:
     with st.form(key="secondary_form"):
@@ -92,80 +118,10 @@ if st.session_state["FormSubmitter:url_form-Submit"]:
                 options=["Yes", "No"], 
                 key="main_form_original_p2f")
         # Does this dataset have sub-datasets?
-        subdatasets = st.pills("Does this dataset contain sub-datasets?",
+        subdatasets = st.pills("Is this dataset a sub dataset?",
                 key="main_form_subdatasets",
-                options=["Yes, I will list them here", 
-                        "Yes, please list them later", 
-                        "No"])
-        if subdatasets == "Yes, I will list them here":
-            pass
+                options=["Yes", "No"])
         st.form_submit_button("Add dataset")
 
-# with st.form(key="main_form"):
-#     dataset_url = st.text_input("What is the URL of the dataset? DOI Preferred", key="main_form_dataset_url")
-#     print(dataset_url)
-#     # After the user has submitted a URL, request the DOI json document and prefill the title and publication date
-#     if dataset_url:
-#         # Set these to none in case our URL from above doesn't do what we want
-#         intermediate_dataset_title = None
-#         intermediate_dataset_publication_date = None
-#         # make the URL into a furl object for easier handling
-#         dataset_furl = furl(dataset_url)
-#         if dataset_furl.host == "doi.org":
-#             try:
-#                 # try to get the DOI record
-#                 request_furl = furl("https://api.datacite.org/dois")
-#                 request_furl = request_furl / dataset_furl.path.segments[-2] / dataset_furl.path.segments[-1]
-#                 intermediate_request = requests.get(request_furl)
-#                 if intermediate_request.ok:
-#                     intermediate_json = intermediate_request.json()
-#                     try:
-#                         intermediate_dataset_title = intermediate_json["data"]["attributes"]["titles"]["title"]
-#                     except:
-#                         pass
-#                     try:
-#                         intermediate_dataset_publication_date = intermediate_json["data"]["attributes"]["dates"]["created"]
-#                         intermediate_dataset_publication_date = datetime.strptime(intermediate_dataset_publication_date,
-#                                                                                 "%Y-%m-%d")
-#                     except:
-#                         pass
-#             except:
-#                 pass
-#     # If the below exist, create the form fields
-#     if "intermediate_dataset_title" in dir():
-#         if intermediate_dataset_title == None:
-#             intermediate_dataset_title = ""
-#         st.text_input("Dataset title:", 
-#                       value=intermediate_dataset_title,
-#                       key="main_form_dataset_title")
-#     if "intermediate_dataset_publication_date" in dir():
-#         if intermediate_dataset_publication_date == None:
-#             intermediate_dataset_publication_date = datetime.now()
-#         st.date_input("Dataset publication date: ", 
-#                       value=intermediate_dataset_publication_date,
-#                       key="main_form_publication_date")
-#     # Time slices covered by the dataset
-#     with st.container():
-#         st.write("Please select the ages/epochs/time slices contained within the dataset")
-#         era_col_1, era_col_2, era_col_3, era_col_4 = st.columns(4)
-#         era_col_1.checkbox("Holocene", key="main_form_holocene")
-#         era_col_2.checkbox("Pleistocene",  key="main_form_pleistocene")
-#         era_col_3.checkbox("Pliocene",  key="main_form_pliocene")
-#         era_col_4.checkbox("Miocene",  key="main_form_miocene")
-#         era_col_1.checkbox("Oligocene",  key="main_form_oligocene")
-#         era_col_2.checkbox("Eocene",  key="main_form_eocene")
-#         era_col_3.checkbox("Paleocene",  key="main_form_paleocene")
-#     # Is this a P2F original dataset? 
-#     st.pills("Was this dataset created by the P2F project?", 
-#              options=["Yes", "No"], 
-#              key="main_form_original_p2f")
-#     # Does this dataset have sub-datasets?
-#     subdatasets = st.pills("Does this dataset contain sub-datasets?",
-#              key="main_form_subdatasets",
-#              options=["Yes, I will list them here", 
-#                       "Yes, please list them later", 
-#                       "No"])
-#     if subdatasets == "Yes, I will list them here":
-#         pass
-#     st.form_submit_button("Add dataset", on_click=main_form_control)
+st.write(st.session_state)
 
