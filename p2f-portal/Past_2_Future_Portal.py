@@ -10,8 +10,6 @@ st.title("Welcome to the Past 2 Future Data Portal")
 st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
-
-
 welcome_markdown = """
 This portal is for the Past 2 Future project, 
 grouping together source datasets that will go into our project, 
