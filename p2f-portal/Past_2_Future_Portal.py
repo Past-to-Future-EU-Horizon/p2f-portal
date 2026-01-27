@@ -10,6 +10,12 @@ st.title("Welcome to the Past 2 Future Data Portal")
 st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
+with st.sidebar.container(border=True):
+    st.markdown("""The Past to Future Portal is being developed open source
+                and is available on GitHub, see all the components at the
+                link below:""")
+    st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
+
 welcome_markdown = """
 This portal is for the Past 2 Future project, 
 grouping together source datasets that will go into our project, 
