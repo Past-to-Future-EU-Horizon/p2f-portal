@@ -14,12 +14,12 @@ st.sidebar.text(disclosure_text.disclosure_text)
 
 def get_datasets():
     client = P2F_Client(hostname="localhost", port=8000, https=False)
-    datasets = client.datasets.list_remote_datasets(is_new_p2f=False)
+    datasets = client.datasets.list_remote_datasets(is_new_p2f=False, is_sub_dataset=False)
     # datasets = [x.model_dump_json(exclude_unset=True) for x in datasets]
     dataset_df = pd.DataFrame(columns=["Title", "UUID", "P2F_Original", "Subdataset"])
     c = 0
     for dataset in datasets:
-        # st.write(dataset)
+        st.write(dataset)
         dataset_df.loc[c] = (dataset.title, dataset.dataset_identifier, dataset.is_new_p2f, dataset.is_sub_dataset)
         c += 1
     return dataset_df
