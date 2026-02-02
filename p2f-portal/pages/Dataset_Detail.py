@@ -36,10 +36,26 @@ def get_dataset_datatypes(dataset_id):
     datatypes = client.harm_data_type.list_data_types(dataset_id=dataset_id)
     return datatypes
 
-def get_graphable_data(dataset_id, datatype):
+def get_graphable_data(dataset_id, datatype, flatten=True):
     client = P2F_Client(hostname="localhost", port=8000, https=False)
-    client.harm_numerical.list_harm_numericals()
+    graphable_data = client.harm_numerical.list_harm_numericals(dataset_id=dataset_id, 
+                                                                data_type=datatype)
+    if flatten:
+        return_data = []
+        if graphable_data.data_harmonized_int is not None:
+            return_data += graphable_data.data_harmonized_int
+        if graphable_data.data_harmonized_int_confidence is not None:
+            return_data += graphable_data.data_harmonized_int_confidence
+        if graphable_data.data_harmonized_float is not None:
+            return_data += graphable_data.data_harmonized_float
+        if graphable_data.data_harmonized_float_confidence is not None:
+            return_data += graphable_data.data_harmonized_float_confidence
+        return return_data
+    else:
+        return graphable_data
 
+def generic_scatter(graphable_data):
+    pd.DataFrame()
 
 if "dataset_id" in st.query_params.keys():
     dataset_id = st.query_params["dataset_id"]
@@ -61,6 +77,17 @@ if "dataset_id" in st.query_params.keys():
     # st.write(sub_measures)
     selected_sub_data_type = st.pills("Sub Data Types:", options=sub_measures, default=sub_measures[0])
     selected_data_type_obj = [x for x in datatypes if x.measure == selected_measure and x.method == selected_sub_data_type][0]
+    st.write(selected_data_type_obj)
+    selected_data = get_graphable_data(dataset_id=dataset_id, datatype=selected_data_type_obj.datatype_id)
+    # st.write(selected_data)
+    graphable_data = pd.DataFrame([x.model_dump(exclude_unset=True) for x in selected_data])
+    # st.dataframe(graphable_data)
+    violin = px.violin(graphable_data, 
+                       x="value",
+                       title=f"Data Preview: {selected_measure}",
+                       subtitle=selected_sub_data_type,
+                       labels={"value": selected_data_type_obj.unit_of_measurement})
+    st.plotly_chart(violin)
     
 else:
     dataset_id = "example"
