@@ -26,15 +26,24 @@ def load_SVG(svg_name):
     with open(svg_path, "r") as f:
         return f.read()
 
-def get_datasets(dataset_id):
+def get_dataset(dataset_id):
     client = P2F_Client(hostname="localhost", port=8000, https=False)
     dataset = client.datasets.get_remote_dataset(dataset_id)
     return dataset
 
+def get_dataset_datatypes(dataset_id):
+    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    datatypes = client.harm_data_type.list_data_types(dataset_id=dataset_id)
+    return datatypes
+
+def get_graphable_data(dataset_id, datatype):
+    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client.harm_numerical.list_harm_numericals()
+
 
 if "dataset_id" in st.query_params.keys():
     dataset_id = st.query_params["dataset_id"]
-    dataset_data = get_datasets(dataset_id=dataset_id)
+    dataset_data = get_dataset(dataset_id=dataset_id)
     st.write(dataset_data)
     st.header(dataset_data.title)
     mcol_1, mcol_2, mcol_3, mcol_4, mcol_5 = st.columns(5) # metadata columns
@@ -44,6 +53,15 @@ if "dataset_id" in st.query_params.keys():
     if dataset_data.is_new_p2f:
         mcol_2.image(load_SVG("P2F_NewData.svg"))
     st.link_button("View Dataset's Home Repository", url=f"https://doi.org/{dataset_data.doi}")
+    st.header("Data Explorer")
+    datatypes = get_dataset_datatypes(dataset_id=dataset_id)
+    measures = list({x.measure for x in datatypes})
+    selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
+    sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
+    # st.write(sub_measures)
+    selected_sub_data_type = st.pills("Sub Data Types:", options=sub_measures, default=sub_measures[0])
+    selected_data_type_obj = [x for x in datatypes if x.measure == selected_measure and x.method == selected_sub_data_type][0]
+    
 else:
     dataset_id = "example"
 
