@@ -31,6 +31,11 @@ def get_dataset(dataset_id):
     dataset = client.datasets.get_remote_dataset(dataset_id)
     return dataset
 
+def get_subdatasets(doi):
+    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    subdatasets = client.datasets.list_remote_datasets(is_sub_dataset=True, doi=doi)
+    return subdatasets
+
 def get_dataset_datatypes(dataset_id):
     client = P2F_Client(hostname="localhost", port=8000, https=False)
     datatypes = client.harm_data_type.list_data_types(dataset_id=dataset_id)
@@ -53,6 +58,11 @@ def get_graphable_data(dataset_id, datatype, flatten=True):
         return return_data
     else:
         return graphable_data
+    
+def get_location_data(dataset_id):
+    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    locations = client.harm_location.list_harm_locations(dataset_id=dataset_id)
+    return locations
 
 def generic_scatter(graphable_data):
     pd.DataFrame()
@@ -69,6 +79,14 @@ if "dataset_id" in st.query_params.keys():
     if dataset_data.is_new_p2f:
         mcol_2.image(load_SVG("P2F_NewData.svg"))
     st.link_button("View Dataset's Home Repository", url=f"https://doi.org/{dataset_data.doi}")
+    st.subheader("Subdatasets")
+    subdatasets = get_subdatasets(doi=dataset_data.doi)
+    subdatasets = {str(x.dataset_identifier): get_dataset(x.dataset_identifier) for x in subdatasets}
+    st.write(subdatasets)
+    st.pills("Subdatasets:", options=[x.title for x in list(subdatasets.values())])
+    all_dataset_uuids = [dataset_id]
+    all_dataset_uuids += [x for x in list(subdatasets.keys())]
+    st.write(all_dataset_uuids)
     st.header("Data Explorer")
     datatypes = get_dataset_datatypes(dataset_id=dataset_id)
     measures = list({x.measure for x in datatypes})
@@ -78,16 +96,32 @@ if "dataset_id" in st.query_params.keys():
     selected_sub_data_type = st.pills("Sub Data Types:", options=sub_measures, default=sub_measures[0])
     selected_data_type_obj = [x for x in datatypes if x.measure == selected_measure and x.method == selected_sub_data_type][0]
     st.write(selected_data_type_obj)
-    selected_data = get_graphable_data(dataset_id=dataset_id, datatype=selected_data_type_obj.datatype_id)
+    selected_data = get_graphable_data(dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id)
     # st.write(selected_data)
     graphable_data = pd.DataFrame([x.model_dump(exclude_unset=True) for x in selected_data])
-    # st.dataframe(graphable_data)
+    st.dataframe(graphable_data)
     violin = px.violin(graphable_data, 
                        x="value",
                        title=f"Data Preview: {selected_measure}",
                        subtitle=selected_sub_data_type,
                        labels={"value": selected_data_type_obj.unit_of_measurement})
     st.plotly_chart(violin)
+    dataset_locations = []
+    for dataset_locs in all_dataset_uuids:
+        bdata = get_location_data(dataset_locs)
+        bdata = [x for x in bdata if str(x.location_identifier) not in [str(y.location_identifier) for y in dataset_locations]]
+        dataset_locations += bdata
+    dataset_locations = [x.model_dump(exclude_unset=True) for x in dataset_locations]
+    dataset_locations = pd.DataFrame(dataset_locations)
+    # st.dataframe(dataset_locations)
+    dataset_map = folium.Map(location=[dataset_locations.latitude.mean(), 
+                                       dataset_locations.longitude.mean()],
+                                       zoom_start=3, 
+                                       width=800)
+    for ix, rec in dataset_locations.iterrows():
+        # st.write(rec)
+        folium.Marker(location=[rec.latitude, rec.longitude]).add_to(dataset_map)
+    st_folium(dataset_map, width="wide")
     
 else:
     dataset_id = "example"
