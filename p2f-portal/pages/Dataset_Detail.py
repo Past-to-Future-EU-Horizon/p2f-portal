@@ -83,12 +83,12 @@ if "dataset_id" in st.query_params.keys():
     subdatasets = get_subdatasets(doi=dataset_data.doi)
     subdatasets = {str(x.dataset_identifier): get_dataset(x.dataset_identifier) for x in subdatasets}
     st.write(subdatasets)
-    st.pills("Subdatasets:", options=[x.title for x in list(subdatasets.values())])
+    selected_subdataset = st.pills("Subdatasets:", options=[x.sub_dataset_name for x in list(subdatasets.values())], default=[x.sub_dataset_name for x in subdatasets.values()][0])
     all_dataset_uuids = [dataset_id]
     all_dataset_uuids += [x for x in list(subdatasets.keys())]
     st.write(all_dataset_uuids)
     st.header("Data Explorer")
-    datatypes = get_dataset_datatypes(dataset_id=dataset_id)
+    datatypes = get_dataset_datatypes(dataset_id=[x.dataset_identifier for x in subdatasets.values() if x.sub_dataset_name == selected_subdataset][0])
     measures = list({x.measure for x in datatypes})
     selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
     sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
@@ -106,6 +106,9 @@ if "dataset_id" in st.query_params.keys():
                        subtitle=selected_sub_data_type,
                        labels={"value": selected_data_type_obj.unit_of_measurement})
     st.plotly_chart(violin)
+
+    st.subheader("Data Geography")
+
     dataset_locations = []
     for dataset_locs in all_dataset_uuids:
         bdata = get_location_data(dataset_locs)
@@ -116,12 +119,12 @@ if "dataset_id" in st.query_params.keys():
     # st.dataframe(dataset_locations)
     dataset_map = folium.Map(location=[dataset_locations.latitude.mean(), 
                                        dataset_locations.longitude.mean()],
-                                       zoom_start=3, 
-                                       width=800)
+                                       zoom_start=1, 
+                                       width=1300, height=700)
     for ix, rec in dataset_locations.iterrows():
         # st.write(rec)
-        folium.Marker(location=[rec.latitude, rec.longitude]).add_to(dataset_map)
-    st_folium(dataset_map, width="wide")
+        folium.Marker(location=[rec.latitude, rec.longitude], tooltip=rec.location_name).add_to(dataset_map)
+    st_folium(dataset_map, width="wide", height=700)
     
 else:
     dataset_id = "example"
