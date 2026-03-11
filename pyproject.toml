@@ -1,8 +1,17 @@
+[build-system]
+requires = ["uv_build >= 0.10.7, <0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+namespace = true
+
+
 [project]
 name = "p2f-portal"
 version = "0.0.1"
 description = "The Streamlit based data portal of the Past to Future project. "
-readme = "README.md"
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.13"
 dependencies = [
     "furl>=2.1.4",
@@ -13,6 +22,15 @@ dependencies = [
     "streamlit>=1.45.0",
     "streamlit-folium>=0.25.1",
 ]
+authors = [
+    {name = "Garrett Speed", email = "g.t.speed@uu.nl"}
+]
+
+[project.urls]
+Homepage = "https://past2future.org/"
+Repository = "https://github.com/Past-to-Future-EU-Horizon/p2f-portal.git"
+
+
 
 [tool.uv.sources]
 p2f-client-py = { git = "https://github.com/Past-to-Future-EU-Horizon/p2f-client-py" }
