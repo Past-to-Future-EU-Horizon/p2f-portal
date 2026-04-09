@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import streamlit as st
 import os
 from datetime import datetime
+from typing import List
 
 de = load_dotenv()
 
@@ -25,6 +26,24 @@ st.title("Explore Source Datasets")
 st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
+with st.sidebar.container(border=True):
+    st.markdown("""The Past to Future Portal is being developed open source
+                and is available on GitHub, see all the components at the
+                link below:""")
+    st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
+
+st.markdown("""On this page you will find datasets that are being re-used by the Past to Future consortium. """)
+
+def get_data_types() -> List[str]:
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    api_data_types = client.harm_data_type.list_data_types()
+    measures = list(set([x.measure for x in api_data_types]))
+    return measures
 
 def get_datasets():
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
@@ -40,7 +59,7 @@ def get_datasets():
     dataset_df = pd.DataFrame(columns=["Title", "UUID", "P2F_Original", "Subdataset"])
     c = 0
     for dataset in datasets:
-        st.write(dataset)
+        # st.write(dataset)
         dataset_df.loc[c] = (
             dataset.title,
             dataset.dataset_identifier,
@@ -51,7 +70,7 @@ def get_datasets():
     return dataset_df
 
 
-st.pills("Data Themes", options=["SSTs"])
+st.pills("Data Themes", options=get_data_types())
 
 edf = get_datasets()
 
@@ -69,7 +88,7 @@ for row in range(len(edf) % COLUMNS + 1):
             # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
             dataset_column_dict[r][c].link_button(
                 "Open Dataset",
-                url=f"http://localhost:8082/Dataset_Detail?dataset_id={edf.loc[dfc].UUID}",
+                url=f"/dataset-detail?dataset_id={edf.loc[dfc].UUID}",
             )
         dfc += 1
         c += 1

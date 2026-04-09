@@ -32,6 +32,12 @@ st.link_button(
 st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
+with st.sidebar.container(border=True):
+    st.markdown("""The Past to Future Portal is being developed open source
+                and is available on GitHub, see all the components at the
+                link below:""")
+    st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
+
 
 def get_datasets():
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 

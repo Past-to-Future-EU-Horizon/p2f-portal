@@ -14,3 +14,5 @@ Portal layer for the Past to Future projects Portal. Past to Future is an EU Hor
 * P2F_API_HOSTNAME
 * P2F_API_PORT = 443
 * P2F_API_HTTPS = True
+* P2F_PORTAL_EMAIL_ADDRESS
+* P2F_PORTAL_TOKEN

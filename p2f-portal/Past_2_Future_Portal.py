@@ -6,11 +6,6 @@ de = load_dotenv()
 
 st.set_page_config(layout="wide")
 
-# existing_datasets = st.Page("pages/01_Source_Datasets.py", title="Source Datasets", icon="🔄️")
-# new_datasets = st.Page("pages/02_New_Datasets.py", title="New Datasets", icon="🆕")
-# project_publications = st.Page("pages/03_Project_Publications.py", title="Project Publications", icon="📃")
-
-
 st.logo("./p2f-portal/assets/P2F_text_transparent_MR.png")
 st.image("./p2f-portal/assets/P2F_text_transparent_MR.png")
 st.title("Welcome to the Past 2 Future Data Portal")
