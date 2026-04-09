@@ -1,0 +1,61 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: p2f-portal-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: p2f-portal-deployment
+  template:
+    metadata:
+      labels:
+        app: p2f-portal-deployment
+    spec:
+      containers:
+        - name: p2f-portal-deployment
+          image: 'ghcr.io/past-to-future-eu-horizon/p2f_portal:latest'
+          ports:
+            - containerPort: 8082
+          imagePullPolicy: Always
+          env:
+            - name: P2F_PORTAL_EMAIL_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: p2f-portal
+                  key: P2F_PORTAL_EMAIL_ADDRESS
+            - name: P2F_PORTAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: p2f-portal
+                  key: P2F_PORTAL_TOKEN
+            - name: P2F_API_HTTPS
+              valueFrom:
+                secretKeyRef:
+                  name: p2f-api
+                  key: P2F_API_HTTPS
+            - name: P2F_API_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: p2f-api
+                  key: P2F_API_HOSTNAME
+            - name: P2F_API_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: p2f-api
+                  key: P2F_API_PORT
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: p2f-portal-service
+spec:
+  selector:
+    app: p2f-portal-deployment
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 8082
