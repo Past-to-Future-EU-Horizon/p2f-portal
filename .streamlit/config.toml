@@ -16,6 +16,9 @@ showEmailPrompt = false
 runOnSave = false
 port = 8082
 
-[browswer]
+[browser]
 gatherUsageStats = false
 serverPort = 443
+
+[logger]
+level = "debug"

@@ -9,7 +9,7 @@ namespace = true
 
 [project]
 name = "p2f-portal"
-version = "0.0.9"
+version = "0.0.10"
 description = "The Streamlit based data portal of the Past to Future project. "
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.13"
