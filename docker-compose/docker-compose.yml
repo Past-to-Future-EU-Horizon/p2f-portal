@@ -1,0 +1,9 @@
+services:
+  p2f-portal:
+    image: p2f-portal:latest
+    environment:
+      - P2F_API_HOSTNAME=p2f-test-api.geo.uu.nl
+      - P2F_API_PORT=443
+      - P2F_API_HTTPS=True
+    ports:
+      - 8082:8082
