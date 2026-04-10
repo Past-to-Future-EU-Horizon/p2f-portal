@@ -5,8 +5,19 @@ import folium
 from streamlit_folium import st_folium
 import plotly.express as px
 import pandas as pd
+from dotenv import load_dotenv
 import json
 import pathlib
+import os
+from datetime import datetime
+
+de = load_dotenv()
+
+P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
+P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
+P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))
+P2F_PORTAL_EMAIL_ADDRESS = os.getenv("P2F_PORTAL_EMAIL_ADDRESS")
+P2F_PORTAL_TOKEN = os.getenv("P2F_PORTAL_TOKEN")
 
 st.set_page_config(layout="wide")
 
@@ -34,25 +45,45 @@ def load_SVG(svg_name):
 
 
 def get_dataset(dataset_id):
-    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
     dataset = client.datasets.get_remote_dataset(dataset_id)
     return dataset
 
 
 def get_subdatasets(doi):
-    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
     subdatasets = client.datasets.list_remote_datasets(is_sub_dataset=True, doi=doi)
     return subdatasets
 
 
 def get_dataset_datatypes(dataset_id):
-    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
     datatypes = client.harm_data_type.list_data_types(dataset_id=dataset_id)
     return datatypes
 
 
 def get_graphable_data(dataset_id, datatype, flatten=True):
-    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
     graphable_data = client.harm_numerical.list_harm_numericals(
         dataset_id=dataset_id, data_type=datatype
     )
@@ -72,7 +103,12 @@ def get_graphable_data(dataset_id, datatype, flatten=True):
 
 
 def get_location_data(dataset_id):
-    client = P2F_Client(hostname="localhost", port=8000, https=False)
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
     locations = client.harm_location.list_harm_locations(dataset_id=dataset_id)
     return locations
 

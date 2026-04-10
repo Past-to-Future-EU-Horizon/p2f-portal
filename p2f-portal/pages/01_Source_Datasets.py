@@ -70,7 +70,7 @@ def get_datasets():
     return dataset_df
 
 
-st.pills("Data Themes", options=get_data_types())
+data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
 edf = get_datasets()
 
