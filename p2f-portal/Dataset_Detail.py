@@ -118,9 +118,11 @@ def generic_scatter(graphable_data):
 
 
 if "dataset_id" in st.query_params.keys():
+    # Get the dataset to inspect from the url parameter
     dataset_id = st.query_params["dataset_id"]
+    # Get the dataset from the API
     dataset_data = get_dataset(dataset_id=dataset_id)
-    st.write(dataset_data)
+    # st.write(dataset_data)
     st.header(dataset_data.title)
     mcol_1, mcol_2, mcol_3, mcol_4, mcol_5 = st.columns(5)  # metadata columns
     mcol_1.text(f"Publication Date: {dataset_data.publication_date}")
@@ -137,7 +139,7 @@ if "dataset_id" in st.query_params.keys():
         str(x.dataset_identifier): get_dataset(x.dataset_identifier)
         for x in subdatasets
     }
-    st.write(subdatasets)
+    # st.write(subdatasets)
     selected_subdataset = st.pills(
         "Subdatasets:",
         options=[x.sub_dataset_name for x in list(subdatasets.values())],
@@ -145,7 +147,7 @@ if "dataset_id" in st.query_params.keys():
     )
     all_dataset_uuids = [dataset_id]
     all_dataset_uuids += [x for x in list(subdatasets.keys())]
-    st.write(all_dataset_uuids)
+    # st.write(all_dataset_uuids)
     st.header("Data Explorer")
     datatypes = get_dataset_datatypes(
         dataset_id=[
@@ -166,7 +168,7 @@ if "dataset_id" in st.query_params.keys():
         for x in datatypes
         if x.measure == selected_measure and x.method == selected_sub_data_type
     ][0]
-    st.write(selected_data_type_obj)
+    # st.write(selected_data_type_obj)
     selected_data = get_graphable_data(
         dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id
     )
