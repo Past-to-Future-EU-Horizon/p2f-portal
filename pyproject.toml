@@ -9,7 +9,7 @@ namespace = true
 
 [project]
 name = "p2f-portal"
-version = "0.0.14"
+version = "0.0.15"
 description = "The Streamlit based data portal of the Past to Future project. "
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.13"
@@ -29,8 +29,3 @@ authors = [
 [project.urls]
 Homepage = "https://past2future.org/"
 Repository = "https://github.com/Past-to-Future-EU-Horizon/p2f-portal.git"
-
-
-
-[tool.uv.sources]
-p2f-client-py = { git = "https://github.com/Past-to-Future-EU-Horizon/p2f-client-py" }
