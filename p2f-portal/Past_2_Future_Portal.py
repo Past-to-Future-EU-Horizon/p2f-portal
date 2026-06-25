@@ -47,18 +47,19 @@ st.markdown(abstract_markdown)
 
 bg1_c1, bg1_c2, bg1_c3, bg1_c4 = st.columns(4)
 
-bg1_c1.link_button(
+bg1_c1.link_button("Visit the Project homepage",
+                   "https://past2future.org/")
+
+bg1_c2.link_button(
     "Read more about the project on the EU Website 🇪🇺",
     "https://doi.org/10.3030/101184070",
 )
 
-if bg1_c2.button("Explore the datasets we're re-using"):
+if bg1_c3.button("Explore the datasets we're re-using"):
     st.switch_page("pages/01_Source_Datasets.py")
 
-if bg1_c3.button("Explore the new datasets we've created"):
+if bg1_c4.button("Explore the new datasets we've created"):
     st.switch_page("pages/02_New_Datasets.py")
 
 # if bg1_c4.button("Explore our project publications"):
 #     st.switch_page("pages/03_Project_Publications.py")
-bg1_c4.link_button("Visit the Project homepage",
-                   "https://past2future.org/")

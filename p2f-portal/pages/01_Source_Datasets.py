@@ -72,25 +72,42 @@ def get_datasets():
 
 data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
-edf = get_datasets()
+dc0r0, dc1r0 = st.columns(2)
 
-COLUMNS = 2
+cdc0r0 = dc0r0.container()
 
-dataset_column_dict = {}
-dfc = 0
-r = 0
-c = 0
-for row in range(len(edf) % COLUMNS + 1):
-    dataset_column_dict[r] = st.columns(COLUMNS)
-    for col in range(COLUMNS):
-        if dfc in edf.index:
-            dataset_column_dict[r][c].subheader(edf.loc[dfc].Title)
-            # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
-            dataset_column_dict[r][c].link_button(
-                "Open Dataset",
-                url=f"/dataset-detail?dataset_id={edf.loc[dfc].UUID}",
-            )
-        dfc += 1
-        c += 1
-    r += 1
-    c = 0
+# Anna Cutmore asked for this dataset to be added
+cdc0r0.header("Multi-sensor global compilation of mid-Holocene (MH) sea surface temperatures (SST)")
+
+rg_card = """*Hessler, Ines; et al*  
+Published 2014-03-21"""
+
+cdc0r0.markdown(rg_card)
+cdc0r0.link_button("See the dataset on Pangaea",
+                   url="https://doi.org/10.1594/PANGAEA.830811")
+
+
+######## !!!!!!! Turn back on when OS is configured for past2future.org
+
+# edf = get_datasets()
+
+# COLUMNS = 2
+
+# dataset_column_dict = {}
+# dfc = 0
+# r = 0
+# c = 0
+# for row in range(len(edf) % COLUMNS + 1):
+#     dataset_column_dict[r] = st.columns(COLUMNS)
+#     for col in range(COLUMNS):
+#         if dfc in edf.index:
+#             dataset_column_dict[r][c].subheader(edf.loc[dfc].Title)
+#             # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
+#             dataset_column_dict[r][c].link_button(
+#                 "Open Dataset",
+#                 url=f"/dataset-detail?dataset_id={edf.loc[dfc].UUID}",
+#             )
+#         dfc += 1
+#         c += 1
+#     r += 1
+#     c = 0

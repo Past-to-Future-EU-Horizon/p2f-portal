@@ -62,27 +62,43 @@ def get_datasets():
     return dataset_df
 
 
-st.pills("Data Themes", options=["SSTs"])
+st.pills("Data Themes", options=["Coming soon"])
 
-edf = get_datasets()
+dc0r0, dc1r0 = st.columns(2)
 
-COLUMNS = 2
+cdc0r0 = dc0r0.container()
 
-dataset_column_dict = {}
-dfc = 0
-r = 0
-c = 0
-for row in range(len(edf) % COLUMNS + 1):
-    dataset_column_dict[r] = st.columns(COLUMNS)
-    for col in range(COLUMNS):
-        if dfc in edf.index:
-            dataset_column_dict[r][c].subheader(edf.loc[dfc].Title)
-            # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
-            dataset_column_dict[r][c].link_button(
-                "Open Dataset",
-                url=f"http://localhost:8082/Dataset_Detail?dataset_id={edf.loc[dfc].UUID}",
-            )
-        dfc += 1
-        c += 1
-    r += 1
-    c = 0
+# Ramesh Glückler
+cdc0r0.header("Compilation of boreal charcoal records")
+
+rg_card = """*Glückler, Ramesh*  
+Published 2026-02-10"""
+
+cdc0r0.markdown(rg_card)
+cdc0r0.link_button("See the dataset on Yoda",
+                   url="https://doi.org/10.24416/UU01-ULL0TO")
+
+###### !!!!! Turn back on when OS is configured for past2future.org
+
+# edf = get_datasets() 
+
+# COLUMNS = 2
+
+# dataset_column_dict = {}
+# dfc = 0
+# r = 0
+# c = 0
+# for row in range(len(edf) % COLUMNS + 1):
+#     dataset_column_dict[r] = st.columns(COLUMNS)
+#     for col in range(COLUMNS):
+#         if dfc in edf.index:
+#             dataset_column_dict[r][c].subheader(edf.loc[dfc].Title)
+#             # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
+#             dataset_column_dict[r][c].link_button(
+#                 "Open Dataset",
+#                 url=f"http://localhost:8082/Dataset_Detail?dataset_id={edf.loc[dfc].UUID}",
+#             )
+#         dfc += 1
+#         c += 1
+#     r += 1
+#     c = 0
