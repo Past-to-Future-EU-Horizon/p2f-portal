@@ -19,6 +19,7 @@ port = 8082
 [browser]
 gatherUsageStats = false
 serverPort = 443
+serverAddress = "portal.past2future.org"
 
 [logger]
 level = "debug"
