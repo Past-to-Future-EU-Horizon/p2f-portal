@@ -44,7 +44,7 @@ def get_datasets():
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
-                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
     datasets = client.datasets.list_remote_datasets(is_new_p2f=True)
     # datasets = [x.model_dump_json(exclude_unset=True) for x in datasets]

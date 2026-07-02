@@ -49,7 +49,7 @@ def get_dataset(dataset_id):
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
-                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
     dataset = client.datasets.get_remote_dataset(dataset_id)
     return dataset
@@ -60,7 +60,7 @@ def get_subdatasets(doi):
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
-                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
     subdatasets = client.datasets.list_remote_datasets(is_sub_dataset=True, doi=doi)
     return subdatasets
@@ -71,7 +71,7 @@ def get_dataset_datatypes(dataset_id):
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
-                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
     datatypes = client.harm_data_type.list_data_types(dataset_id=dataset_id)
     return datatypes
@@ -82,7 +82,7 @@ def get_graphable_data(dataset_id, datatype, flatten=True):
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
-                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
     graphable_data = client.harm_numerical.list_harm_numericals(
         dataset_id=dataset_id, data_type=datatype
@@ -107,7 +107,7 @@ def get_location_data(dataset_id):
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
-                        token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
     locations = client.harm_location.list_harm_locations(dataset_id=dataset_id)
     return locations

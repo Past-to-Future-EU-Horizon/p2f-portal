@@ -25,5 +25,5 @@ client = P2F_Client(hostname=P2F_API_HOSTNAME,
                     port=P2F_API_PORT, 
                     https=P2F_API_HTTPS, 
                     token=P2F_PORTAL_TOKEN, 
-                    token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                    # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                     email=P2F_PORTAL_EMAIL_ADDRESS)
