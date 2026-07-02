@@ -176,3 +176,4 @@ cython_debug/
 uv.lock
 OpenShift/test.ingress.yml
 Kubernetes/test.ingress.yml
+Kubernetes/ingress-prod.yml

@@ -69,7 +69,10 @@ def get_datasets():
         c += 1
     return dataset_df
 
-
+try: 
+    server_data_types = get_data_types()
+except Exception: 
+    server_data_types = ["Coming soon"]
 data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
 dc0r0, dc1r0 = st.columns(2)
