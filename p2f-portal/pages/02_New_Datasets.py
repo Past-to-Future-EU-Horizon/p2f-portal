@@ -66,7 +66,7 @@ st.pills("Data Themes", options=["Coming soon"])
 
 dc0r0, dc1r0 = st.columns(2)
 
-cdc0r0 = dc0r0.container()
+cdc0r0 = dc0r0.container(border=True)
 
 # Ramesh Glückler
 cdc0r0.header("Compilation of boreal charcoal records")

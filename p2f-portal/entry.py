@@ -9,7 +9,7 @@ AddDataset = st.Page("new_Add_Dataset.py", title="Add a Dataset", url_path="/add
 PrivacyPolicy = st.Page("Privacy_Policy.py", title="Privacy Policy", url_path="/privacy-policy")
 # Hidden nav
 DatasetDetail = st.Page("Dataset_Detail.py", title="Dataset Details", url_path="/dataset-detail", visibility="hidden")
-LoginPage = st.Page("login.py", title="P2F Login", url_path="/login", visibility="hidden")
+LoginPage = st.Page("login.py", title="P2F Login", url_path="/login")
 
 
 nav = st.navigation({"Home": [HomePage],

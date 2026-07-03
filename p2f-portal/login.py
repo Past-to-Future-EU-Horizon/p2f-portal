@@ -22,7 +22,7 @@ st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
 
 def request_token():
-    st.code(st.session_state)
+    # st.code(st.session_state)
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
@@ -35,10 +35,10 @@ with st.sidebar.container(border=True):
                 link below:""")
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
-set_auth = st.form(key="authentication")
-email_set_address = set_auth.text_input("Email address: ", key="email")
-token = set_auth.text_input("Token from email: ", key="token")
-set_auth.form_submit_button("Set Credentials")
+# set_auth = st.form(key="authentication")
+# email_set_address = set_auth.text_input("Email address: ", key="email")
+# token = set_auth.text_input("Token from email: ", key="token")
+# set_auth.form_submit_button("Set Credentials")
 
 tokreq = st.form(key="token-request")
 tokreq.text_input("Email address: ", key="email_token_request")

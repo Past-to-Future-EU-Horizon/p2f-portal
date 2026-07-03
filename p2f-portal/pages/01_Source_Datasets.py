@@ -77,7 +77,7 @@ data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
 dc0r0, dc1r0 = st.columns(2)
 
-cdc0r0 = dc0r0.container()
+cdc0r0 = dc0r0.container(border=True)
 
 # Anna Cutmore asked for this dataset to be added
 cdc0r0.header("Multi-sensor global compilation of mid-Holocene (MH) sea surface temperatures (SST)")

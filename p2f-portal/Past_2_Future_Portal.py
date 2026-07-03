@@ -47,12 +47,14 @@ st.markdown(abstract_markdown)
 
 bg1_c1, bg1_c2, bg1_c3, bg1_c4 = st.columns(4)
 
-bg1_c1.link_button("Visit the Project homepage",
-                   "https://past2future.org/")
+bg1_c1.link_button(label="Visit the Project homepage",
+                   url="https://past2future.org/",
+                   icon="🏡")
 
 bg1_c2.link_button(
-    "Read more about the project on the EU Website 🇪🇺",
-    "https://doi.org/10.3030/101184070",
+    label="Read more about the project on the EU Website",
+    url="https://doi.org/10.3030/101184070",
+    icon="🇪🇺"
 )
 
 if bg1_c3.button("Explore the datasets we're re-using"):
