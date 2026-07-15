@@ -28,7 +28,7 @@ def request_token():
                         https=P2F_API_HTTPS, 
                         email=st.session_state["email_token_request"])
     req = client.request_token()
-    st.info(body=req, icon="🛎️")
+    st.info(body=req["status"], icon="🛎️")
 
 with st.sidebar.container(border=True):
     st.markdown("""The Past to Future Portal is being developed open source

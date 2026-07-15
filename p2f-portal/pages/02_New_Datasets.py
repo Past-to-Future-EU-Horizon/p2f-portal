@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import pathlib
 import os
 from datetime import datetime
+from typing import List
 
 de = load_dotenv()
 
@@ -38,6 +39,16 @@ with st.sidebar.container(border=True):
                 link below:""")
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
+def get_data_types() -> List[str]:
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    api_data_types = client.harm_data_type.list_data_types()
+    measures = list(set([x.measure for x in api_data_types]))
+    return measures
 
 def get_datasets():
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
@@ -61,44 +72,47 @@ def get_datasets():
         c += 1
     return dataset_df
 
+try: 
+    server_data_types = get_data_types()
+except Exception: 
+    server_data_types = ["Coming soon"]
+data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
-st.pills("Data Themes", options=["Coming soon"])
+# dc0r0, dc1r0 = st.columns(2)
 
-dc0r0, dc1r0 = st.columns(2)
+# cdc0r0 = dc0r0.container(border=True)
 
-cdc0r0 = dc0r0.container(border=True)
+# # Ramesh Glückler
+# cdc0r0.header("Compilation of boreal charcoal records")
 
-# Ramesh Glückler
-cdc0r0.header("Compilation of boreal charcoal records")
+# rg_card = """*Glückler, Ramesh*  
+# Published 2026-02-10"""
 
-rg_card = """*Glückler, Ramesh*  
-Published 2026-02-10"""
+# cdc0r0.markdown(rg_card)
+# cdc0r0.link_button("See the dataset on Yoda",
+#                    url="https://doi.org/10.24416/UU01-ULL0TO")
 
-cdc0r0.markdown(rg_card)
-cdc0r0.link_button("See the dataset on Yoda",
-                   url="https://doi.org/10.24416/UU01-ULL0TO")
 
-###### !!!!! Turn back on when OS is configured for past2future.org
+edf = get_datasets() 
 
-# edf = get_datasets() 
+COLUMNS = 2
 
-# COLUMNS = 2
-
-# dataset_column_dict = {}
-# dfc = 0
-# r = 0
-# c = 0
-# for row in range(len(edf) % COLUMNS + 1):
-#     dataset_column_dict[r] = st.columns(COLUMNS)
-#     for col in range(COLUMNS):
-#         if dfc in edf.index:
-#             dataset_column_dict[r][c].subheader(edf.loc[dfc].Title)
-#             # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
-#             dataset_column_dict[r][c].link_button(
-#                 "Open Dataset",
-#                 url=f"http://localhost:8082/Dataset_Detail?dataset_id={edf.loc[dfc].UUID}",
-#             )
-#         dfc += 1
-#         c += 1
-#     r += 1
-#     c = 0
+if len(edf) > 0:
+    dataset_column_dict = {}
+    dfc = 0
+    r = 0
+    c = 0
+    for row in range(len(edf) % COLUMNS + 1):
+        dataset_column_dict[r] = st.columns(COLUMNS)
+        for col in range(COLUMNS):
+            if dfc in edf.index:
+                dataset_column_dict[r][c].subheader(edf.loc[dfc].Title)
+                # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
+                dataset_column_dict[r][c].link_button(
+                    "Open Dataset",
+                    url=f"http://localhost:8082/Dataset_Detail?dataset_id={edf.loc[dfc].UUID}",
+                )
+            dfc += 1
+            c += 1
+        r += 1
+        c = 0

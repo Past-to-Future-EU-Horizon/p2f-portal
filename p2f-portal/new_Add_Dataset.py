@@ -1,7 +1,14 @@
+from p2f_client.p2f_client import P2F_Client
 import streamlit as st
 from assets import disclosure_text
-from p2f_pydantic.harm_timeslices import HARM_Timeslice
+from typing import List
+import os
 
+P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
+P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
+P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))
+P2F_PORTAL_EMAIL_ADDRESS = os.getenv("P2F_PORTAL_EMAIL_ADDRESS")
+P2F_PORTAL_TOKEN = os.getenv("P2F_PORTAL_TOKEN")
 
 st.set_page_config(layout="wide")
 
@@ -35,42 +42,54 @@ ds_time_older = tsc0.number_input(label="What is the oldest date in this dataset
 ds_time_young = tsc1.number_input(label="What is the youngest date in this dataset?")
 ds_time_zero = tsc2.pills(label="What is the 0 year?", options=["1950", "2000", "Other"])
 
+def get_data_types() -> List[str]:
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    api_data_types = client.harm_data_type.list_data_types()
+    measures = list(set([x.measure for x in api_data_types]))
+    if len(measures) > 0:
+        return measures
+    else:
+        return ["No data types found on API"]
 
-timeslices = [
-    HARM_Timeslice(timeslice_name="last 7,500 Years", timeslice_age_oldest=7_500, timeslice_age_recent=0),
-    HARM_Timeslice(timeslice_name="4,2 aridification event", timeslice_age_mean=4_200),
-    HARM_Timeslice(timeslice_name="Mid-Holocene Warm Period/ Holocene Climatic Optimum", timeslice_age_oldest=9_500, timeslice_age_recent=5_500),
-    HARM_Timeslice(timeslice_name="Mid-Holocene 6ka", timeslice_age_mean=6_000),
-    HARM_Timeslice(timeslice_name="thermal maximum of the Holocene Climatic Maximum", timeslice_age_mean=8_000),
-    HARM_Timeslice(timeslice_name="8,2 Ka cold event", timeslice_age_mean=8_200),
-    HARM_Timeslice(timeslice_name="Holocene", timeslice_age_oldest=11_700, timeslice_age_recent=0),
-    HARM_Timeslice(timeslice_name="Bølling-Allerød transition", timeslice_age_oldest=14_600, timeslice_age_recent=13_000),
-    HARM_Timeslice(timeslice_name="Last glacial-interglacial transition (Termination 1, T1)", timeslice_age_oldest=19_000, timeslice_age_recent=8_000),
-    HARM_Timeslice(timeslice_name="Last Glacial Maximum (LGM)", timeslice_age_oldest=31_000, timeslice_age_recent=16_000),
-    HARM_Timeslice(timeslice_name="Last Glacial Maximum (LGM) snapshot", timeslice_age_oldest=23_000, timeslice_age_recent=19_000),
-    HARM_Timeslice(timeslice_name="Last Glacial Period (LGP)", timeslice_age_oldest=115_000, timeslice_age_recent=11_700),
-    HARM_Timeslice(timeslice_name="Dansgaard-Oeschger (D-O) events", timeslice_age_oldest=130_000, timeslice_age_recent=11_700),
-    HARM_Timeslice(timeslice_name="Last interglacial to glacial transition (MIS 5a to MIS 4)", timeslice_age_oldest=85_000, timeslice_age_recent=65_000),
-    HARM_Timeslice(timeslice_name="Last Interglacial/Eemian/MIS 5e", timeslice_age_oldest=130_000, timeslice_age_recent=115_000),
-    HARM_Timeslice(timeslice_name="Marine Isotope Stage 5/MIS 5", timeslice_age_oldest=130_000, timeslice_age_recent=80_000),
-    HARM_Timeslice(timeslice_name="Penultimate glacial-interglacial transition (T2)", timeslice_age_oldest=140_000, timeslice_age_recent=120_000),
-    HARM_Timeslice(timeslice_name="Penultimate interglacial to glacial transition (MIS 7e to MIS 7d)", timeslice_age_oldest=250_000, timeslice_age_recent=225_000),
-    HARM_Timeslice(timeslice_name="Marine Isotope Stage 11/MIS 11", timeslice_age_oldest=424_000, timeslice_age_recent=374_000),
-    HARM_Timeslice(timeslice_name="Mid-Pleistocene Transition/MPT", timeslice_age_oldest=1_250_000, timeslice_age_recent=700_000),
-    # HARM_Timeslice(timeslice_name="late Pliocene and early Pleistocene glacial-interglacial cycles", timeslice_age_oldest=, timeslice_age_recent=), # No dates provided in spreadsheet 
-    HARM_Timeslice(timeslice_name="Pre-MPT glacial cycles (MIS 39 to MIS 45)", timeslice_age_oldest=1_400_000, timeslice_age_recent=1_250_000),
-    HARM_Timeslice(timeslice_name="MIS 100 (MIS 95 to MIS 101)", timeslice_age_oldest=2_600_000, timeslice_age_recent=2_400_000),
-    HARM_Timeslice(timeslice_name="Pliocene-Pleistocene transition", timeslice_age_mean=2_580_000),
-    HARM_Timeslice(timeslice_name="Pliocene", timeslice_age_oldest=5_330_000, timeslice_age_recent=2_580_000),
-    HARM_Timeslice(timeslice_name="Mid-Piacenzian Warm Period (mPWP)/Mid-Pliocene Warm Period", timeslice_age_oldest=3_300_000, timeslice_age_recent=3_000_000),
-    HARM_Timeslice(timeslice_name="KM5c interglacial", timeslice_age_mean=3_205_000),
-    # HARM_Timeslice(timeslice_name="KM5c-M2 transition", timeslice_age_oldest=, timeslice_age_recent=), # No dates provided in spreadsheet
-    HARM_Timeslice(timeslice_name="M2 glacial", timeslice_age_mean=3_300_000),
-    HARM_Timeslice(timeslice_name="Eocene Climatic Optimum/Early Eocene Climatic Optimum/EECO", timeslice_age_oldest=53_000_000, timeslice_age_recent=49_000_000),
-]
+def get_timeslices() -> List[str]:
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    api_timeslices =  client.harm_data_type.list_data_types()
+    timeslices = list(set([x.measure for x in api_timeslices]))
+    if len(timeslices) > 0:
+        return timeslices
+    else:
+        return ["No timeslices found on API"]
 
-ds_timeslices = new_dataset.selectbox(label="Which P2F Timeslices does this cover?", 
-                                  options=[x.timeslice_name for x in timeslices], )
+try: 
+    server_data_types = get_data_types()
+except Exception: 
+    server_data_types = ["API Error, no data types found"]
+
+try: 
+    server_timeslices = get_timeslices()
+except Exception:
+    server_timeslices = ["API Error, no timeslices found"]
+
+
+data_theme_selection = st.pills("Data Themes", options=get_data_types())
+
+ds_datatypes = new_dataset.pills(label="What P2F Data Types does this contain?",
+                                 options=server_data_types,
+                                 selection_mode="multi")
+
+ds_timeslices = new_dataset.pills(label="Which P2F Timeslices does this cover?", 
+                                  options=server_timeslices,
+                                  selection_mode="multi")
 
 ds_keywords = new_dataset.text_input(label="Keywords (comma separated)")
 
