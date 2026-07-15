@@ -63,8 +63,8 @@ def get_timeslices() -> List[str]:
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
-    api_timeslices =  client.harm_data_type.list_data_types()
-    timeslices = list(set([x.measure for x in api_timeslices]))
+    api_timeslices =  client.harm_timeslice.list_timeslices()
+    timeslices = list(set([x.timeslice_name for x in api_timeslices]))
     if len(timeslices) > 0:
         return timeslices
     else:

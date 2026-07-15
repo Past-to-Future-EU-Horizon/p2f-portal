@@ -62,7 +62,7 @@ def get_datasets():
         # st.write(dataset)
         dataset_df.loc[c] = (
             dataset.title,
-            dataset.dataset_identifier,
+            dataset.dataset_id,
             dataset.is_new_p2f,
             dataset.is_sub_dataset,
         )
