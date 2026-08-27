@@ -29,7 +29,7 @@ st.title("Add a new dataset")
 new_dataset = st.form(key="new-dataset")
 
 ds_url = new_dataset.text_input(label="URL")
-st.button(label="Get metadata from DOI API")
+# st.button(label="Get metadata from DOI API")
 
 ds_title = new_dataset.text_input(label="Title")
 
@@ -38,9 +38,21 @@ ds_new_p2f = new_dataset.pills(label="Is this a new dataset by the P2F Consortiu
                                default="Yes")
 
 tsc0, tsc1, tsc2 = new_dataset.columns(3)
-ds_time_older = tsc0.number_input(label="What is the oldest date in this dataset?")
-ds_time_young = tsc1.number_input(label="What is the youngest date in this dataset?")
-ds_time_zero = tsc2.pills(label="What is the 0 year?", options=["1950", "2000", "Other"])
+ds_time_older = tsc0.number_input(label="What is the oldest date in this dataset?", 
+                                  step=1, 
+                                  value=0)
+ds_time_young = tsc1.number_input(label="What is the youngest date in this dataset?", 
+                                  step=1, 
+                                  value=0)
+ds_time_zero = tsc2.pills(label="What is the 0 year?", 
+                          options=["1950", "2000", "Other"],
+                          default="1950",
+                          required=True)
+if ds_time_zero is not None:
+    if ds_time_zero == "Other":
+        tsc2.number_input(label="Other zero year:",
+                        step=1,
+                        value=2000)
 
 def get_data_types() -> List[str]:
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
@@ -81,7 +93,7 @@ except Exception:
     server_timeslices = ["API Error, no timeslices found"]
 
 
-data_theme_selection = st.pills("Data Themes", options=get_data_types())
+# data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
 ds_datatypes = new_dataset.pills(label="What P2F Data Types does this contain?",
                                  options=server_data_types,
