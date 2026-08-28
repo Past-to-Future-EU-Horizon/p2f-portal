@@ -108,8 +108,13 @@ ds_keywords = new_dataset.text_input(label="Keywords (comma separated)")
 ds_seasonality = new_dataset.pills(label="Does the dataset have seasonality?", 
                                    options=["No", "Winter/Summer", "Hot/Cold", "Winter/Spring/Summer/Autumn", "Other"], 
                                    default="No")
-
-auth_email = new_dataset.text_input(label="P2F Authorized Email Address")
-auth_token = new_dataset.text_input(label="Your current P2F Token")
+auth_col1, auth_col2 = new_dataset.columns([2, 1], 
+                                           vertical_alignment="center",
+                                           )
+auth_email = auth_col1.text_input(label="P2F Authorized Email Address")
+auth_token = auth_col1.text_input(label="Your current P2F Token")
+# auth_col2.space(size="large")
+auth_col2.page_link(label="Don't have a token? Request one here ➡️",
+                    page="new_Add_Dataset.py",)
 
 submit = new_dataset.form_submit_button("Add dataset")
