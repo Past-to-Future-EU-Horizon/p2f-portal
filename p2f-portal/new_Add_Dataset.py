@@ -1,8 +1,10 @@
 from apilogs import logger
 from p2f_client.p2f_client import P2F_Client
+from p2f_pydantic.harm_data_types import HARM_Data_Type
+from p2f_pydantic.harm_timeslices import HARM_Timeslice
 import streamlit as st
 from assets import disclosure_text
-from typing import List
+from typing import List, Optional
 import os
 
 P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
@@ -37,6 +39,40 @@ def yesno_2_bool(yesno):
         result = True
     return result
 
+def get_data_types(measure_request: Optional[str] = None) -> List[str] | HARM_Data_Type:
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    api_data_types = client.harm_data_type.list_data_types()
+    if measure_request is not None:
+        return [x for x in api_data_types if x.measure == measure_request][0]
+    else:
+        measures = list(set([x.measure for x in api_data_types]))
+        if len(measures) > 0:
+            return measures
+        else:
+            return ["No data types found on API"]
+
+def get_timeslices(timeslice_request: Optional[str] = None) -> List[str] | HARM_Timeslice:
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    api_timeslices =  client.harm_timeslice.list_timeslices()
+    if timeslice_request is not None:
+        return [x for x in api_timeslices if x.timeslice_name == timeslice_request]
+    else:
+        timeslices = list(set([x.timeslice_name for x in api_timeslices]))
+        if len(timeslices) > 0:
+            return timeslices
+        else:
+            return ["No timeslices found on API"]
+
 def submit_dataset():
     # login with current user authorization
     client = P2F_Client(hostname=P2F_API_HOSTNAME,
@@ -70,14 +106,44 @@ def submit_dataset():
             st.warning(body="The time coverage of the dataset failed to upload",
                        icon="⚠️")
     ## Data types
+    if continuation:
+        try:
+            for data_type in ds_datatypes:
+                data_type_object = get_data_types(measure_request=data_type)
+                client.harm_data_type.assign_data_type_to_dataset(datatype_id=data_type_object.datatype_id,
+                                                                  dataset_id=ds_uploaded.dataset_id)
+        except Exception:
+            st.warning(body="Data types failed to be associated with the dataset properly",
+                       icon="⚠️")
+    ## Time Slices - Needs a dataset timeslice assignment as well
     # if continuation:
     #     try:
-    #         upload_dt_obj = client.harm_data_type
+    #         for timeslice in ds_timeslices:
+    #             timeslice_object = get_timeslices(timeslice_request=timeslice)
+    #             client.harm_timeslice.assign_timeslice(timeslice_id=timeslice_object.timeslice_id,
+    #                                                    )
+    #         pass
     #     except Exception:
     #         pass
-    ## Time Slices
+
     ## Keywords
+    if continuation:
+        try:
+            for keyword in ds_keywords.split(","):
+                keyword = keyword.strip()
+                client.keywords.add_keyword_to_dataset(new_keyword=keyword, 
+                                                       dataset_id=ds_uploaded.dataset_id)
+        except Exception:
+            st.warning(body="Keywords failed to upload",
+                       icon="🔣")
     ## Seasonailty
+    if continuation:
+        try:
+            client.seasonality.add_seasonality(dataset_id=ds_uploaded.dataset_id,
+                                               new_seasonality=ds_seasonality)
+        except Exception:
+            st.warning(body="Failed to assign seasonality to dataset",
+                       icon="🍂")
     
 new_dataset = st.form(key="new-dataset")
 
@@ -113,41 +179,14 @@ if ds_time_zero is not None:
                                                step=1,
                                                value=2000)
 
-def get_data_types() -> List[str]:
-    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
-                        port=P2F_API_PORT, 
-                        https=P2F_API_HTTPS, 
-                        token=P2F_PORTAL_TOKEN, 
-                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
-                        email=P2F_PORTAL_EMAIL_ADDRESS)
-    api_data_types = client.harm_data_type.list_data_types()
-    measures = list(set([x.measure for x in api_data_types]))
-    if len(measures) > 0:
-        return measures
-    else:
-        return ["No data types found on API"]
-
-def get_timeslices() -> List[str]:
-    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
-                        port=P2F_API_PORT, 
-                        https=P2F_API_HTTPS, 
-                        token=P2F_PORTAL_TOKEN, 
-                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
-                        email=P2F_PORTAL_EMAIL_ADDRESS)
-    api_timeslices =  client.harm_timeslice.list_timeslices()
-    timeslices = list(set([x.timeslice_name for x in api_timeslices]))
-    if len(timeslices) > 0:
-        return timeslices
-    else:
-        return ["No timeslices found on API"]
 
 ############################### BEGIN NOT YET IMPLEMENTED IN CLIENT
 
-# try: 
-#     server_data_types = get_data_types()
-# except Exception: 
-#     server_data_types = None
-#     logger.debug("API Error, no data types found")
+try: 
+    server_data_types = get_data_types()
+except Exception: 
+    server_data_types = None
+    logger.debug("API Error, no data types found")
 
 # try: 
 #     server_timeslices = get_timeslices()
@@ -158,23 +197,23 @@ def get_timeslices() -> List[str]:
 
 # # data_theme_selection = st.pills("Data Themes", options=get_data_types())
 
-# if server_data_types is not None:
-#     ds_datatypes = new_dataset.pills(label="What P2F Data Types does this contain?",
-#                                     options=server_data_types,
-#                                     selection_mode="multi")
-# else:
-#     new_dataset.text("Data types are currently unavailable")
+if server_data_types is not None:
+    ds_datatypes = new_dataset.pills(label="What P2F Data Types does this contain?",
+                                    options=server_data_types,
+                                    selection_mode="multi")
+else:
+    new_dataset.text("Data types are currently unavailable")
 # if server_timeslices is not None:
 #     ds_timeslices = new_dataset.pills(label="Which P2F Timeslices does this cover?", 
 #                                     options=server_timeslices,
 #                                     selection_mode="multi")
 # else:
 #     new_dataset.text("Timeslices are currently unavailable")
-# ds_keywords = new_dataset.text_input(label="Keywords (comma separated)")
+ds_keywords = new_dataset.text_input(label="Keywords (comma separated)")
 
-# ds_seasonality = new_dataset.pills(label="Does the dataset have seasonality?", 
-#                                    options=["No", "Winter/Summer", "Hot/Cold", "Winter/Spring/Summer/Autumn", "Other"], 
-#                                    default="No")
+ds_seasonality = new_dataset.pills(label="Does the dataset have seasonality?", 
+                                   options=["No", "Winter/Summer", "Hot/Cold", "Winter/Spring/Summer/Autumn", "Other"], 
+                                   default="No")
 
 ################################ END NOT IMPLEMENTED IN CLIENT YET
 
