@@ -90,12 +90,6 @@ if proxy_flag_option is not None:
     data_theme_selection = st.pills("Data Themes", options=get_data_types(is_proxy=proxy_boolean))
 
 
-try: 
-    server_data_types = get_data_types()
-except Exception: 
-    server_data_types = ["Coming soon"]
-data_theme_selection = st.pills("Data Themes", options=get_data_types())
-
 # dc0r0, dc1r0 = st.columns(2)
 
 # cdc0r0 = dc0r0.container(border=True)
