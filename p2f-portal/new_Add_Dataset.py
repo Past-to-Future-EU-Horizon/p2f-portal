@@ -55,15 +55,20 @@ def submit_dataset():
     except Exception:
         st.error(body="There was an issue uploading the dataset record to the API",
                  icon="⚠️")
-        continuation = False
-    ## Date range upload - client not implemented yet
-    # if continuation:
-    #     try: 
-    #         upload_timerange = client.age.data_model()
-    #         dtr_uploaded = client.age.upload_age(upload_timerange)
-    #     except Exception:
-    #         st.warning(body="",
-    #                    icon="")
+        continuation = False # Continuation for when a process fails and we cannot try to do anything else
+    # Time coverage upload - client not implemented yet
+    if continuation:
+        try: 
+            upload_timerange = client.harm_ds_timecoverage.data_model(
+                dataset_id=ds_uploaded.dataset_id,
+                oldest=ds_time_older,
+                youngest=ds_time_young,
+                reference_zero=ds_time_zero
+            )
+            client.harm_ds_timecoverage.upload_dataset_timecoverage(upload_timerange)
+        except Exception:
+            st.warning(body="The time coverage of the dataset failed to upload",
+                       icon="⚠️")
     ## Data types
     # if continuation:
     #     try:
@@ -89,24 +94,24 @@ ds_new_p2f = newp2fcol.pills(label="Is this a new dataset by the P2F Consortium?
                                options=["Yes", "No"], 
                                default="Yes")
 
-############################### BEGIN NOT YET IMPLEMENTED IN CLIENT
 
-# tsc0, tsc1, tsc2 = new_dataset.columns(3)
-# ds_time_older = tsc0.number_input(label="What is the oldest date in this dataset?", 
-#                                   step=1, 
-#                                   value=0)
-# ds_time_young = tsc1.number_input(label="What is the youngest date in this dataset?", 
-#                                   step=1, 
-#                                   value=0)
-# ds_time_zero = tsc2.pills(label="What is the 0 year?", 
-#                           options=["1950", "2000", "Other"],
-#                           default="1950",
-#                           required=True)
-# if ds_time_zero is not None:
-#     if ds_time_zero == "Other":
-#         tsc2.number_input(label="Other zero year:",
-#                         step=1,
-#                         value=2000)
+
+tsc0, tsc1, tsc2 = new_dataset.columns(3)
+ds_time_older = tsc0.number_input(label="What is the oldest date in this dataset?", 
+                                  step=1, 
+                                  value=0)
+ds_time_young = tsc1.number_input(label="What is the youngest date in this dataset?", 
+                                  step=1, 
+                                  value=0)
+ds_time_zero = tsc2.pills(label="What is the 0 year?", 
+                          options=["1950", "2000", "Other"],
+                          default="1950",
+                          required=True)
+if ds_time_zero is not None:
+    if ds_time_zero == "Other":
+        ds_time_zero_other = tsc2.number_input(label="Other zero year:",
+                                               step=1,
+                                               value=2000)
 
 def get_data_types() -> List[str]:
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
@@ -135,6 +140,8 @@ def get_timeslices() -> List[str]:
         return timeslices
     else:
         return ["No timeslices found on API"]
+
+############################### BEGIN NOT YET IMPLEMENTED IN CLIENT
 
 # try: 
 #     server_data_types = get_data_types()
