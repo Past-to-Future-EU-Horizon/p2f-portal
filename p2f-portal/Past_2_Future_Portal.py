@@ -19,6 +19,8 @@ with st.sidebar.container(border=True):
                 link below:""")
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
+st.sidebar.text("P2F Portal v0.0.28")
+
 welcome_markdown = """
 This portal is for the Past 2 Future project, 
 grouping together source datasets that will go into our project, 
