@@ -138,7 +138,7 @@ if "dataset_id" in st.query_params.keys():
     
     subdatasets = get_subdatasets(doi=dataset_data.doi)
     subdatasets = {
-        str(x.dataset_identifier): get_dataset(x.dataset_identifier)
+        str(x.dataset_id): get_dataset(x.dataset_id)
         for x in subdatasets
     }
     # st.write(subdatasets)
@@ -155,7 +155,7 @@ if "dataset_id" in st.query_params.keys():
         st.header("Data Explorer")
         datatypes = get_dataset_datatypes(
             dataset_id=[
-                x.dataset_identifier
+                x.dataset_id
                 for x in subdatasets.values()
                 if x.sub_dataset_name == selected_subdataset
             ][0]
