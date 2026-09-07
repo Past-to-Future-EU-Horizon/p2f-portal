@@ -79,12 +79,11 @@ def dataset_exists_check(dataset_id):
                         https=P2F_API_HTTPS,
                         email=P2F_PORTAL_EMAIL_ADDRESS,
                         token=P2F_PORTAL_TOKEN)
-    dataset_check = client.datasets.get_remote_dataset(dataset_id=dataset_id)
-    logger.debug(f"Dataset Type Check = {type(dataset_check)}\nData Model Type Check = {type(client.datasets.data_model)}")
-    if type(dataset_check) != type(client.datasets.data_model):
-        return False
-    else: 
+    try:
+        dataset_check = client.datasets.get_remote_dataset(dataset_id=dataset_id)
         return True
+    except Exception: # TODO fix this exception handler
+        return False
 
 def get_data_types(measure_request: Optional[str] = None) -> List[str] | HARM_Data_Type:
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
@@ -106,9 +105,7 @@ def get_data_types(measure_request: Optional[str] = None) -> List[str] | HARM_Da
 if "dataset_id" in st.query_params:
     # check if dataset_id exists on API
     continuity = True
-    try: 
-        dataset_exists_check(st.query_params["dataset_id"])
-    except Exception:
+    if not dataset_exists_check(st.query_params["dataset_id"]):
         continuity = False
         st.error(body="The dataset ID used for this page cannot be found",
                  icon="⚠️")
@@ -142,6 +139,7 @@ if "data_upload_authorization" in st.session_state:
                                            type=["xlsx", "csv", "tsv", "xls", "odt"])
         if data_upload_box: 
             match data_upload_box.type:
+                # ft used below means file type
                 case ft if ft in ["xlsx", "xls", "odt"]:
                     # Excel or Open Document Foundation
                     df = pd.read_excel(data_upload_box.read(), 
