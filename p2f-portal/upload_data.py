@@ -55,13 +55,14 @@ def healthcheck_request():
     r = requests.get(healthcheck_url)
     return r.ok
 
-def session_state_credential_check():
+def session_state_credentials_exist():
     r = False
     if "auth_email" in st.session_state and "auth_token" in st.session_state:
         r = True
     return r
 
 def credential_check(email, token):
+    logger.debug(f"Just received credential form input, session state: \n{st.session_state}")
     st.session_state["auth_email"] = email
     st.session_state["auth_token"] = token
     if healthcheck_request:
@@ -71,10 +72,11 @@ def credential_check(email, token):
         r = requests.post(upload_request_url, 
                           headers=headers)
         if r.ok:
-            is_authorized = Authorization_Check(**r.json()).authorized
-            logger.debug(f"User {email} authorization result: {is_authorized}")
-            if is_authorized:
-                st.session_state["data_upload_authorization"] = is_authorized
+            authorization_result = Authorization_Check(**r.json())
+            is_authorized = authorization_result.authorized
+            logger.debug(f"User {email} authorization result: {authorization_result.model_dump_json()}")
+            st.session_state["data_upload_authorization"] = authorization_result
+            logger.debug(f"Credential check request have run, session state: \n{st.session_state}")
             return is_authorized
 
 def dataset_exists_check(dataset_id):
@@ -118,11 +120,14 @@ if "dataset_id" in st.query_params:
                  icon="⚠️")
     # check user credentials for uploading data
     if continuity:
-        if session_state_credential_check():
+        logger.debug(f"dataset_id requirements met, session state: \n{st.session_state}")
+        if session_state_credentials_exist():
+            logger.debug(f"Credentials for {st.session_state['auth_email']} were found in the session state, running authorization")
             if not credential_check(email=st.session_state["auth_email"],
                                     token=st.session_state["auth_token"]):
                 continuity = False
-                logger.error(f"The user {st.session_state['auth_email']} attempted use a token but is marked as unauthorized for uploading data. ")
+                logger.error(f"The user {st.session_state['auth_email']} attempted to use a token but is marked as unauthorized for uploading data. ")
+                logger.debug(f"The session state at the time of the above credential failure: \n{st.session_state}")
                 st.error(body="The provided credentials are unauthorized for data upload. ",
                          icon="⛔")
         else:
@@ -144,6 +149,7 @@ else:
              icon="❓")
 
 if "data_upload_authorization" in st.session_state:
+    logger.debug(f"Authorization passed, letting user upload data now, session state: \n{st.session_state}")
     if st.session_state["data_upload_authorization"]:
         data_upload_box = st.file_uploader(label="Upload a data file here",
                                            accept_multiple_files=False,
