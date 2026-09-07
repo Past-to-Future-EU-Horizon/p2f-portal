@@ -1,4 +1,5 @@
 from p2f_client.p2f_client import P2F_Client
+from apilogs import logger
 from p2f_pydantic.temp_accounts import Authorization_Check
 from p2f_pydantic.harm_data_types import HARM_Data_Type
 from assets import disclosure_text
@@ -79,8 +80,11 @@ def dataset_exists_check(dataset_id):
                         email=P2F_PORTAL_EMAIL_ADDRESS,
                         token=P2F_PORTAL_TOKEN)
     dataset_check = client.datasets.get_remote_dataset(dataset_id=dataset_id)
+    logger.debug(f"Dataset Type Check = {type(dataset_check)}\nData Model Type Check = {type(client.datasets.data_model)}")
     if type(dataset_check) != type(client.datasets.data_model):
-        raise KeyError("Dataset not found.")
+        return False
+    else: 
+        return True
 
 def get_data_types(measure_request: Optional[str] = None) -> List[str] | HARM_Data_Type:
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 

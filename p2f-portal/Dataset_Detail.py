@@ -124,7 +124,7 @@ if "dataset_id" in st.query_params.keys():
     dataset_data = get_dataset(dataset_id=dataset_id)
     # st.write(dataset_data)
     st.header(dataset_data.title)
-    st.page_link("/upload-data", query_params={"dataset_id": dataset_id})
+    st.page_link("upload_data.py", query_params={"dataset_id": dataset_id})
     mcol_1, mcol_2, mcol_3, mcol_4, mcol_5 = st.columns(5)  # metadata columns
     mcol_1.text(f"Publication Date: {dataset_data.publication_date}")
     if not dataset_data.is_new_p2f:
