@@ -1,4 +1,4 @@
-from apilogs import logger
+from portallogs import logger
 from p2f_client.p2f_client import P2F_Client
 from p2f_pydantic.harm_data_types import HARM_Data_Type
 from p2f_pydantic.harm_timeslices import HARM_Timeslice

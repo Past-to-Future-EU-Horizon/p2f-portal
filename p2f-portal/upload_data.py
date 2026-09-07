@@ -1,5 +1,5 @@
 from p2f_client.p2f_client import P2F_Client
-from apilogs import logger
+from portallogs import logger
 from p2f_pydantic.temp_accounts import Authorization_Check
 from p2f_pydantic.harm_data_types import HARM_Data_Type
 from assets import disclosure_text
