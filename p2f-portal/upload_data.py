@@ -118,7 +118,7 @@ if "dataset_id" in st.query_params:
                 st.error(body="The provided credentials are unauthorized for data upload. ",
                          icon="⛔")
         else:
-            credential_form = st.form()
+            credential_form = st.form(key="add-credentials-upload-data-py")
             auth_col1, auth_col2 = credential_form.columns([2, 1], 
                                            vertical_alignment="center",
                                            )

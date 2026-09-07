@@ -124,7 +124,8 @@ if "dataset_id" in st.query_params.keys():
     dataset_data = get_dataset(dataset_id=dataset_id)
     # st.write(dataset_data)
     st.header(dataset_data.title)
-    st.page_link("upload_data.py", query_params={"dataset_id": dataset_id})
+    st.page_link("upload_data.py", 
+                 query_params={"dataset_id": dataset_id})
     mcol_1, mcol_2, mcol_3, mcol_4, mcol_5 = st.columns(5)  # metadata columns
     mcol_1.text(f"Publication Date: {dataset_data.publication_date}")
     if not dataset_data.is_new_p2f:
@@ -141,82 +142,83 @@ if "dataset_id" in st.query_params.keys():
         for x in subdatasets
     }
     # st.write(subdatasets)
-    selected_subdataset = st.pills(
-        "Subdatasets:",
-        options=[x.sub_dataset_name for x in list(subdatasets.values())],
-        default=[x.sub_dataset_name for x in subdatasets.values()][0],
-    )
-    all_dataset_uuids = [dataset_id]
-    all_dataset_uuids += [x for x in list(subdatasets.keys())]
-    # st.write(all_dataset_uuids)
-    st.header("Data Explorer")
-    datatypes = get_dataset_datatypes(
-        dataset_id=[
-            x.dataset_identifier
-            for x in subdatasets.values()
-            if x.sub_dataset_name == selected_subdataset
-        ][0]
-    )
-    measures = list({x.measure for x in datatypes})
-    selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
-    sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
-    # st.write(sub_measures)
-    selected_sub_data_type = st.pills(
-        "Sub Data Types:", options=sub_measures, default=sub_measures[0]
-    )
-    selected_data_type_obj = [
-        x
-        for x in datatypes
-        if x.measure == selected_measure and x.method == selected_sub_data_type
-    ][0]
-    # st.write(selected_data_type_obj)
-    selected_data = get_graphable_data(
-        dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id
-    )
-    # st.write(selected_data)
-    graphable_data = pd.DataFrame(
-        [x.model_dump(exclude_unset=True) for x in selected_data]
-    )
-    st.dataframe(graphable_data)
-    violin = px.violin(
-        graphable_data,
-        x="value",
-        title=f"Data Preview: {selected_measure}",
-        subtitle=selected_sub_data_type,
-        labels={"value": selected_data_type_obj.unit_of_measurement},
-    )
-    st.plotly_chart(violin)
-
-    st.subheader("Data Geography")
-
-    dataset_locations = []
-    for dataset_locs in all_dataset_uuids:
-        bdata = get_location_data(dataset_locs)
-        bdata = [
+    if len(subdatasets.keys()) > 0:
+        selected_subdataset = st.pills(
+            "Subdatasets:",
+            options=[x.sub_dataset_name for x in list(subdatasets.values())],
+            default=[x.sub_dataset_name for x in subdatasets.values()][0],
+        )
+        all_dataset_uuids = [dataset_id]
+        all_dataset_uuids += [x for x in list(subdatasets.keys())]
+        # st.write(all_dataset_uuids)
+        st.header("Data Explorer")
+        datatypes = get_dataset_datatypes(
+            dataset_id=[
+                x.dataset_identifier
+                for x in subdatasets.values()
+                if x.sub_dataset_name == selected_subdataset
+            ][0]
+        )
+        measures = list({x.measure for x in datatypes})
+        selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
+        sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
+        # st.write(sub_measures)
+        selected_sub_data_type = st.pills(
+            "Sub Data Types:", options=sub_measures, default=sub_measures[0]
+        )
+        selected_data_type_obj = [
             x
-            for x in bdata
-            if str(x.location_identifier)
-            not in [str(y.location_identifier) for y in dataset_locations]
-        ]
-        dataset_locations += bdata
-    dataset_locations = [x.model_dump(exclude_unset=True) for x in dataset_locations]
-    dataset_locations = pd.DataFrame(dataset_locations)
-    # st.dataframe(dataset_locations)
-    dataset_map = folium.Map(
-        location=[
-            dataset_locations.latitude.mean(),
-            dataset_locations.longitude.mean(),
-        ],
-        zoom_start=1,
-        width=1300,
-        height=700,
-    )
-    for ix, rec in dataset_locations.iterrows():
-        # st.write(rec)
-        folium.Marker(
-            location=[rec.latitude, rec.longitude], tooltip=rec.location_name
-        ).add_to(dataset_map)
-    st_folium(dataset_map, width="wide", height=700)
+            for x in datatypes
+            if x.measure == selected_measure and x.method == selected_sub_data_type
+        ][0]
+        # st.write(selected_data_type_obj)
+        selected_data = get_graphable_data(
+            dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id
+        )
+        # st.write(selected_data)
+        graphable_data = pd.DataFrame(
+            [x.model_dump(exclude_unset=True) for x in selected_data]
+        )
+        st.dataframe(graphable_data)
+        violin = px.violin(
+            graphable_data,
+            x="value",
+            title=f"Data Preview: {selected_measure}",
+            subtitle=selected_sub_data_type,
+            labels={"value": selected_data_type_obj.unit_of_measurement},
+        )
+        st.plotly_chart(violin)
+
+        st.subheader("Data Geography")
+
+        dataset_locations = []
+        for dataset_locs in all_dataset_uuids:
+            bdata = get_location_data(dataset_locs)
+            bdata = [
+                x
+                for x in bdata
+                if str(x.location_identifier)
+                not in [str(y.location_identifier) for y in dataset_locations]
+            ]
+            dataset_locations += bdata
+        dataset_locations = [x.model_dump(exclude_unset=True) for x in dataset_locations]
+        dataset_locations = pd.DataFrame(dataset_locations)
+        # st.dataframe(dataset_locations)
+        dataset_map = folium.Map(
+            location=[
+                dataset_locations.latitude.mean(),
+                dataset_locations.longitude.mean(),
+            ],
+            zoom_start=1,
+            width=1300,
+            height=700,
+        )
+        for ix, rec in dataset_locations.iterrows():
+            # st.write(rec)
+            folium.Marker(
+                location=[rec.latitude, rec.longitude], tooltip=rec.location_name
+            ).add_to(dataset_map)
+        st_folium(dataset_map, width="wide", height=700)
 
 else:
     dataset_id = "example"
