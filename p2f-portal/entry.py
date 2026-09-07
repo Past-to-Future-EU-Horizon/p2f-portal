@@ -10,9 +10,10 @@ PrivacyPolicy = st.Page("Privacy_Policy.py", title="Privacy Policy", url_path="/
 # Hidden nav
 DatasetDetail = st.Page("Dataset_Detail.py", title="Dataset Details", url_path="/dataset-detail", visibility="hidden")
 LoginPage = st.Page("login.py", title="P2F Login", url_path="/login")
+UploadData = st.Page("upload_data.py", title="Upload Data", url_path="/upload-data", visibility="hidden")
 
 
 nav = st.navigation({"Home": [HomePage],
-                     "Datasets": [SourceDatasets, NewDatasets, AddDataset, DatasetDetail], 
+                     "Datasets": [SourceDatasets, NewDatasets, AddDataset, DatasetDetail, UploadData], 
                      "Other": [PrivacyPolicy, LoginPage]})
 nav.run()

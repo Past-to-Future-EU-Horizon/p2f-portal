@@ -33,6 +33,9 @@ st.text("This page is not yet fully implemented. " \
         "Email and token are required to be able to submit a dataset, " \
         "request one before filling in the form")
 
+st.warning(body="This page is not yet fully functional, please send your thoughts on" \
+                "layout and functionality to the developer with the date that you used the page")
+
 def yesno_2_bool(yesno):
     result = False
     if yesno.upper == "YES":
@@ -224,7 +227,7 @@ auth_email = auth_col1.text_input(label="P2F Authorized Email Address")
 auth_token = auth_col1.text_input(label="Your current P2F Token")
 # auth_col2.space(size="large")
 auth_col2.page_link(label="Don't have a token? Request one here ➡️",
-                    page="new_Add_Dataset.py",)
+                    page="login.py",)
 
 submit = new_dataset.form_submit_button("Add dataset",
                                         on_click=submit_dataset)
