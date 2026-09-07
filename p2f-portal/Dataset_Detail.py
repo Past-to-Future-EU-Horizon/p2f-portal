@@ -135,7 +135,7 @@ if "dataset_id" in st.query_params.keys():
     st.link_button(
         "View Dataset's Home Repository", url=f"https://doi.org/{dataset_data.doi}"
     )
-    st.subheader("Subdatasets")
+    
     subdatasets = get_subdatasets(doi=dataset_data.doi)
     subdatasets = {
         str(x.dataset_identifier): get_dataset(x.dataset_identifier)
@@ -143,6 +143,7 @@ if "dataset_id" in st.query_params.keys():
     }
     # st.write(subdatasets)
     if len(subdatasets.keys()) > 0:
+        st.subheader("Subdatasets")
         selected_subdataset = st.pills(
             "Subdatasets:",
             options=[x.sub_dataset_name for x in list(subdatasets.values())],
