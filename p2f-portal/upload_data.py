@@ -62,6 +62,8 @@ def session_state_credential_check():
     return r
 
 def credential_check(email, token):
+    st.session_state["auth_email"] = email
+    st.session_state["auth_token"] = token
     if healthcheck_request:
         upload_request_url = P2F_API_FURL / "token" / "data-upload-check"
         headers = {"x-p2f-token": token, 
@@ -193,8 +195,6 @@ if "data_upload_authorization" in st.session_state:
                         pass
                     case "Other/Ignore":
                         pass
-
-
 
 else:
     st.error(body="No dataset id was found, please access this page by through a dataset detail page.",
