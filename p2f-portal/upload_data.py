@@ -71,9 +71,11 @@ def credential_check(email, token):
         r = requests.post(upload_request_url, 
                           headers=headers)
         if r.ok:
-            is_authorized = Authorization_Check(r.json()).authorized
+            is_authorized = Authorization_Check(**r.json()).authorized
+            logger.debug(f"User {email} authorization result: {is_authorized}")
             if is_authorized:
                 st.session_state["data_upload_authorization"] = is_authorized
+            return is_authorized
 
 def dataset_exists_check(dataset_id):
     client = P2F_Client(hostname=P2F_API_HOSTNAME,
@@ -106,8 +108,11 @@ def get_data_types(measure_request: Optional[str] = None) -> List[str] | HARM_Da
 
 if "dataset_id" in st.query_params:
     # check if dataset_id exists on API
+    dataset_id = st.query_params["dataset_id"]
+    logger.debug(f"Request made for upload_data page with dataset_id set as {dataset_id}")
     continuity = True
-    if not dataset_exists_check(st.query_params["dataset_id"]):
+    if not dataset_exists_check(dataset_id=dataset_id):
+        logger.error(f"The upload_page for dataset_id {dataset_id} could not be found on the API")
         continuity = False
         st.error(body="The dataset ID used for this page cannot be found",
                  icon="⚠️")
@@ -117,6 +122,7 @@ if "dataset_id" in st.query_params:
             if not credential_check(email=st.session_state["auth_email"],
                                     token=st.session_state["auth_token"]):
                 continuity = False
+                logger.error(f"The user {st.session_state['auth_email']} attempted use a token but is marked as unauthorized for uploading data. ")
                 st.error(body="The provided credentials are unauthorized for data upload. ",
                          icon="⛔")
         else:
@@ -132,6 +138,10 @@ if "dataset_id" in st.query_params:
             credential_form.form_submit_button("Submit", 
                                                on_click=credential_check, 
                                                kwargs={"email": auth_email, "token": auth_token}, )
+else:
+    logger.debug("The page upload_data was accessed without a dataset_id query parameter. ")
+    st.error(body="No dataset id was found, please access this page by through a dataset detail page.",
+             icon="❓")
 
 if "data_upload_authorization" in st.session_state:
     if st.session_state["data_upload_authorization"]:
@@ -140,6 +150,7 @@ if "data_upload_authorization" in st.session_state:
                                            max_upload_size=50_000_000,
                                            type=["xlsx", "csv", "tsv", "xls", "odt"])
         if data_upload_box: 
+            logger.debug(f"The user {st.session_state['auth_email']} uploaded a {data_upload_box.type}. ")
             match data_upload_box.type:
                 # ft used below means file type
                 case ft if ft in ["xlsx", "xls", "odt"]:
@@ -196,6 +207,3 @@ if "data_upload_authorization" in st.session_state:
                     case "Other/Ignore":
                         pass
 
-else:
-    st.error(body="No dataset id was found, please access this page by through a dataset detail page.",
-             icon="❓")
