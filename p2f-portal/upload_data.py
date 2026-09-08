@@ -62,6 +62,7 @@ def session_state_credentials_exist():
     return r
 
 def credential_check(email, token):
+    logger.debug(f"Function credential_check() received email={email}, {'*'*len(token)}")
     logger.debug(f"Just received credential form input, session state: \n{st.session_state}")
     st.session_state["auth_email"] = email
     st.session_state["auth_token"] = token
