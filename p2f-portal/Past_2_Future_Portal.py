@@ -50,7 +50,7 @@ plausible climate change scenarios based on past events."""
 
 st.markdown(abstract_markdown)
 
-bg1_c1, bg1_c2, bg1_c3, bg1_c4 = st.columns(4)
+bg1_c1, bg1_c2, bg1_c3, bg1_c4, bg1_c5 = st.columns(5)
 
 bg1_c1.link_button(label="Visit the Project homepage",
                    url="https://past2future.org/",
@@ -67,6 +67,12 @@ if bg1_c3.button("Explore the datasets we're re-using"):
 
 if bg1_c4.button("Explore the new datasets we've created"):
     st.switch_page("pages/02_New_Datasets.py")
+
+bg1_c5.link_button(
+    label="Read the API documentation",
+    url="https://api.past2future.org/docs",
+    icon="📖"
+)
 
 # if bg1_c4.button("Explore our project publications"):
 #     st.switch_page("pages/03_Project_Publications.py")
