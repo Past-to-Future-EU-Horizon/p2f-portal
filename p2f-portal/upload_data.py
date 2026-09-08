@@ -160,7 +160,7 @@ if "data_upload_authorization" in st.session_state:
     if st.session_state["data_upload_authorization"]:
         data_upload_box = st.file_uploader(label="Upload a data file here",
                                            accept_multiple_files=False,
-                                           max_upload_size=50_000_000,
+                                           max_upload_size=50,
                                            type=["xlsx", "csv", "tsv", "xls", "odt"])
         if data_upload_box: 
             logger.debug(f"The user {st.session_state['auth_email']} uploaded a {data_upload_box.type}. ")
