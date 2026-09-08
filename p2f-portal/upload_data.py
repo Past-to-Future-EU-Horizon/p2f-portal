@@ -66,8 +66,12 @@ def session_state_credentials_exist():
 def credential_check(email, token):
     logger.debug(f"Function credential_check() received email={email}, {'*'*len(token)}")
     logger.debug(f"Just received credential form input, session state: \n{st.session_state}")
-    st.session_state["auth_email"] = email
-    st.session_state["auth_token"] = token
+    if "auth_email" not in st.session_state and email is not None:
+        logger.debug("credential_check() auth email not in session state and email var was not none")
+        st.session_state["auth_email"] = email
+    if "auth_token" not in st.session_state and token is not None:
+        logger.debug("credential_check() auth token not in session state and token var was not none")
+        st.session_state["auth_token"] = token
     if healthcheck_request:
         upload_request_url = P2F_API_FURL / "token" / "data-upload-check"
         headers = {"x-p2f-token": token, 
