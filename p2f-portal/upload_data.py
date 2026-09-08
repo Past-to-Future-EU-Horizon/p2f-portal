@@ -11,6 +11,8 @@ import os
 import pathlib
 from typing import Optional, List
 
+logger.info("PAGE ACCESS: upload_data.py")
+
 P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
 P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
 P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))
@@ -136,8 +138,8 @@ if "dataset_id" in st.query_params:
             auth_col1, auth_col2 = credential_form.columns([2, 1], 
                                            vertical_alignment="center",
                                            )
-            auth_email = auth_col1.text_input(label="P2F Authorized Email Address")
-            auth_token = auth_col1.text_input(label="Your current P2F Token")
+            auth_email = auth_col1.text_input(label="P2F Authorized Email Address", key="auth_email")
+            auth_token = auth_col1.text_input(label="Your current P2F Token", key="auth_token")
             # auth_col2.space(size="large")
             auth_col2.page_link(label="Don't have a token? Request one here ➡️",
                                 page="new_Add_Dataset.py",)

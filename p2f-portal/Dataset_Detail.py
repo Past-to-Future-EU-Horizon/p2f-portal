@@ -1,4 +1,5 @@
 from p2f_client.p2f_client import P2F_Client
+from portallogs import logger
 from assets import disclosure_text
 import streamlit as st
 import folium
@@ -10,6 +11,8 @@ import json
 import pathlib
 import os
 from datetime import datetime
+
+logger.debug("PAGE ACCESS: Dataset_Detail.py")
 
 de = load_dotenv()
 

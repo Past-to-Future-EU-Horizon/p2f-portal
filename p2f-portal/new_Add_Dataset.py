@@ -7,6 +7,8 @@ from assets import disclosure_text
 from typing import List, Optional
 import os
 
+logger.info("PAGE ACCESS: new_Add_Dataset.py")
+
 P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
 P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
 P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))

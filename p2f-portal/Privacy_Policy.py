@@ -1,7 +1,10 @@
+from portallogs import logger
 import streamlit as st
 
 st.set_page_config(page_title="Privacy Policy",
                    layout="wide")
+
+logger.info("PAGE ACCESS: Privacy_Policy.py")
 
 st.title("Privacy Policy")
 

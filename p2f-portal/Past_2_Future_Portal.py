@@ -1,6 +1,9 @@
 from assets import disclosure_text
+from portallogs import logger
 import streamlit as st
 from dotenv import load_dotenv
+
+logger.info("PAGE ACCESS: Past_2_Future_Portal.py")
 
 de = load_dotenv()
 
@@ -19,7 +22,7 @@ with st.sidebar.container(border=True):
                 link below:""")
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
-st.sidebar.text("P2F Portal v0.0.41")
+st.sidebar.text("P2F Portal v0.0.42")
 
 welcome_markdown = """
 This portal is for the Past 2 Future project, 

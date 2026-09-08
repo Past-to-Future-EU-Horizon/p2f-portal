@@ -1,5 +1,6 @@
 from p2f_client.p2f_client import P2F_Client
 from p2f_pydantic.datasets import Datasets
+from portallogs import logger
 import streamlit as st
 import requests
 from furl import furl
@@ -7,6 +8,8 @@ from datetime import datetime
 
 # import json
 import pathlib
+
+logger.info("PAGE ACCESS: Add_Dataset.py")
 
 if "parent_id" in st.query_params.keys():
     temp_client = P2F_Client(hostname="localhost", port=8000, https=False)

@@ -1,8 +1,11 @@
 from assets import disclosure_text
+from portallogs import logger
 from p2f_client.p2f_client import P2F_Client
 import streamlit as st
 import os
 from dotenv import load_dotenv
+
+logger.info("PAGE ACCESS: login.py")
 
 de = load_dotenv()
 
