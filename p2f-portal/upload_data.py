@@ -166,17 +166,19 @@ if "data_upload_authorization" in st.session_state:
             logger.debug(f"The user {st.session_state['auth_email']} uploaded a {data_upload_box.type}. ")
             match data_upload_box.type:
                 # ft used below means file type
-                case ft if ft in ["xlsx", "xls", "odt"]:
+                case ft if ft in ["xlsx", "xls", "odt", ".xlsx", ".xls", ".odt"]:
+                    logger.debug("Following EXCEL family route")
                     # Excel or Open Document Foundation
                     df = pd.read_excel(data_upload_box.read(), 
-                                       sheet_name=None # Important, returns each sheet as a separate DF in a dictionary. 
+                                       sheet_name=None, # Important, returns each sheet as a separate DF in a dictionary. 
                                        )
                     sheet_selection = st.pills("Choose a sheet from your Excel: ", 
                                                options=list(df.keys()),
                                                selection_mode="single", 
                                                default=list(df.keys())[0],
                                                required=True)
-                case ft if ft in ["csv", "tsv"]:
+                case ft if ft in ["csv", "tsv", ".csv", ".tsv"]:
+                    logger.debug("Following CSV family route")
                     df = pd.read_csv(data_upload_box.read())
             st.dataframe(df)
             for column in df.columns:
