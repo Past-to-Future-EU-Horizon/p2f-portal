@@ -9,6 +9,7 @@ import pandas as pd
 from furl import furl
 import os
 import pathlib
+from io import BytesIO
 from typing import Optional, List
 
 logger.info("PAGE ACCESS: upload_data.py")
@@ -161,12 +162,13 @@ if "data_upload_authorization" in st.session_state:
         data_upload_box = st.file_uploader(label="Upload a data file here",
                                            accept_multiple_files=False,
                                            max_upload_size=50,
-                                           type=["xlsx", "csv", "tsv", "xls", "odt"])
+                                           type=["xlsx", "csv", "tsv", "xls", "ods", "txt"])
         if data_upload_box: 
+            file_bytes = BytesIO(data_upload_box.read())
             logger.debug(f"The user {st.session_state['auth_email']} uploaded a {data_upload_box.type}. ")
             match data_upload_box.type:
                 # ft used below means file type
-                case ft if ft in ["xlsx", "xls", "odt", ".xlsx", ".xls", ".odt"]:
+                case ft if ft in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.oasis.opendocument.spreadsheet"]:
                     logger.debug("Following EXCEL family route")
                     # Excel or Open Document Foundation
                     df = pd.read_excel(data_upload_box.read(), 
@@ -177,7 +179,9 @@ if "data_upload_authorization" in st.session_state:
                                                selection_mode="single", 
                                                default=list(df.keys())[0],
                                                required=True)
-                case ft if ft in ["csv", "tsv", ".csv", ".tsv"]:
+                    if sheet_selection:
+                        df = df[sheet_selection]
+                case ft if ft in ["text/csv", "text/txt", "text/tsv"]:
                     logger.debug("Following CSV family route")
                     df = pd.read_csv(data_upload_box.read())
             st.dataframe(df)
