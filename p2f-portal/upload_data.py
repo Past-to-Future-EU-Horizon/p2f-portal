@@ -171,7 +171,7 @@ if "data_upload_authorization" in st.session_state:
                 case ft if ft in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.oasis.opendocument.spreadsheet"]:
                     logger.debug("Following EXCEL family route")
                     # Excel or Open Document Foundation
-                    df = pd.read_excel(data_upload_box.read(), 
+                    df = pd.read_excel(file_bytes, 
                                        sheet_name=None, # Important, returns each sheet as a separate DF in a dictionary. 
                                        )
                     sheet_selection = st.pills("Choose a sheet from your Excel: ", 
@@ -183,7 +183,7 @@ if "data_upload_authorization" in st.session_state:
                         df = df[sheet_selection]
                 case ft if ft in ["text/csv", "text/txt", "text/tsv"]:
                     logger.debug("Following CSV family route")
-                    df = pd.read_csv(data_upload_box.read())
+                    df = pd.read_csv(file_bytes)
             st.dataframe(df)
             for column in df.columns:
                 col_type_options = [
