@@ -177,3 +177,4 @@ uv.lock
 OpenShift/test.ingress.yml
 Kubernetes/test.ingress.yml
 Kubernetes/ingress-prod.yml
+p2f-portal/upload_digest_page.py
