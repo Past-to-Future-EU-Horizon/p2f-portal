@@ -179,7 +179,8 @@ if "data_upload_authorization" in st.session_state:
                                                options=list(df.keys()),
                                                selection_mode="single", 
                                                default=list(df.keys())[0],
-                                               required=True)
+                                               required=True,
+                                               key=f"sheet_selection")
                     if sheet_selection:
                         df = df[sheet_selection]
                 case ft if ft in ["text/csv", "text/txt", "text/tsv"]:
@@ -206,35 +207,44 @@ if "data_upload_authorization" in st.session_state:
                         col_numerical_is_main = st.pills("Is this a central value or a companion confidence interval value?",
                                                          options=["Central Value", "Confidence or Error value", "Interval of Confidence or Error"], 
                                                          help="Central value is the headline number (24°C), confidence or error value is the value at a confidence interval (21°C), interval of confidence or error is for example 5% or 95%",
-                                                         selection_mode="single")
+                                                         selection_mode="single",
+                                                         key=f"numerical_ismain_{column}")
                         if col_numerical_is_main:
                             match col_numerical_is_main:
                                 case "Central Value":
                                     col_numerical_is_proxy = st.pills("Is this a proxy?",
-                                                                                                options=["Yes", "No"],
-                                                                                                default="Yes", 
-                                                                                                required=True, 
-                                                                                                selection_mode="single")
+                                                                        options=["Yes", "No"],
+                                                                        default="Yes", 
+                                                                        required=True, 
+                                                                        selection_mode="single",
+                                                                        key=f"numerical_isproxy_{column}")
                                     if col_numerical_is_proxy:
                                         col_numerical_is_proxy_bool = yesno_2_bool(col_numerical_is_proxy)
                                         col_numerical_type_measure = st.selectbox("What does this numerical data measure?", 
-                                                                                  options=placeholder_options,)
+                                                                                  options=placeholder_options,
+                                                                                  key=f"numerical_measure_{column}")
                                         if col_numerical_type_measure:
                                             col_numerical_type_method = st.selectbox("How was this unit measured?", 
-                                                                                     options=placeholder_options)
+                                                                                     options=placeholder_options,
+                                                                                     key=f"numerical_method_{column}")
                                             if col_numerical_type_method:
                                                 col_numerical_type_calibration = st.selectbox("How was this measure calibrated?",
-                                                                                              options=placeholder_options)
+                                                                                              options=placeholder_options,
+                                                                                              key=f"numerical_calibration_{column}")
                                 case "Confidence or Error Value":
                                     col_numerical_confval_upperorlower = st.pills("Is this an upper or lower confidencevalue?",
-                                                                                     options=["Upper", "Lower"])
+                                                                                     options=["Upper", "Lower"],
+                                                                                     key=f"numerical_confval_uol_{column}")
                                     col_numerical_confval_companionto = st.selectbox("What column is the central value?",
-                                                                                        options=df.columns)
+                                                                                        options=df.columns,
+                                                                                        key=f"numerical_confval_companion_{column}")
                                 case "Interval of Confidence or Error":
                                     col_numerical_confint_upperorlower = st.pills("Is this an upper or lower confidence interval?",
-                                                                                     options=["Upper", "Lower"])
+                                                                                     options=["Upper", "Lower"],
+                                                                                     key=f"numerical_confint_uol_{column}")
                                     col_numerical_confint_companionto = st.selectbox("What column is the confidence value?",
-                                                                                     options=df.columns)
+                                                                                     options=df.columns,
+                                                                                     key=f"numerical_confint_companion_{column}")
                     case "Record Metadata":
                         col_metadata_options = [
                                                 "Location", 
@@ -245,14 +255,16 @@ if "data_upload_authorization" in st.session_state:
                                                 "Species"
                                                 ]
                         col_metadata = st.pills("What kind of metadata is this?",
-                                                options=col_metadata_options)
+                                                options=col_metadata_options, 
+                                                key=f"metadata_type_{column}")
                         if col_metadata:
                             match col_metadata:
                                 case "Location":
                                     col_metadata_location_options = ["Latitude", "Longitude", "Elevation", "Location Age", "WKB", "WKT", "Other"]
                                     col_metadata_location = st.pills(label="What location information is this?",
                                                                      options=col_metadata_location_options, 
-                                                                     selection_mode="single",)
+                                                                     selection_mode="single",
+                                                                     key=f"location_type_{column}")
                                 case "Season":
                                     st.write("Please review the unique seasons found in this column")
                                     season_markdown_list = """"""
@@ -265,14 +277,17 @@ if "data_upload_authorization" in st.session_state:
                                                                      "Millions of years before present"]
                                     col_metadata_age_unit = st.pills(label="What are the units of this column?",
                                                                      options=col_metadata_age_unit_options,
-                                                                     selection_mode="single")
+                                                                     selection_mode="single",
+                                                                     key=f"age_unit_{column}")
                                     col_metadata_age_zero = st.pills(label="What is the zero calendar year for this column?",
-                                                                     options=["1950", "2000", "Other"])
+                                                                     options=["1950", "2000", "Other"],
+                                                                     key=f"age_zero_{column}")
                                     if col_metadata_age_zero:
                                         if col_metadata_age_zero == "Other":
                                             zero_year = st.number_input("What is the other zero year?", 
                                                             value=2000,
-                                                            step=10)
+                                                            step=10,
+                                                            key=f"age_otherzero_{column}")
                                         else: 
                                             zero_year = int(col_metadata_age_zero)                                            
                                 case "Age Model":
@@ -285,7 +300,8 @@ if "data_upload_authorization" in st.session_state:
                                     col_metadata_corelength_options = ["millimeters", "centimeters", "meters"]
                                     col_metadata_corelength_unit = st.pills(label="What are the units for the length along the core?",
                                                                             options=col_metadata_corelength_options,
-                                                                            selection_mode="single")
+                                                                            selection_mode="single",
+                                                                            key=f"corelength_unit_{column}")
                                 case "Species":
                                     species_emoji = ['😻', '🐵', '🐶', '🐺', '🦁', '🐯', 
                                                      '🦒', '🦊', '🦝', '🐮', '🐷', '🐗', 
