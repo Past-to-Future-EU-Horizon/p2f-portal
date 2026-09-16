@@ -11,6 +11,7 @@ import os
 import pathlib
 from io import BytesIO
 from typing import Optional, List
+from random import choice as rchoice
 
 logger.info("PAGE ACCESS: upload_data.py")
 
@@ -194,35 +195,124 @@ if "data_upload_authorization" in st.session_state:
                                     "Other/Ignore",
                                     ]
                 
-                col_type = st.pills("What type of column is this?",
+                col_type = st.pills(f"What type of column is {column}?",
                                     options= col_type_options,
                                     key=f"{column}_col_type")
+                placeholder_options = ["Option 1", "Option 2"]
                 match col_type:
                     case "Record ID or index":
                         pass
                     case "Numerical data":
-                        col_numerical_is_proxy = st.pills("Is this a proxy?",
-                                                          options=["Yes", "No"],
-                                                          default="Yes", 
-                                                          required=True, 
-                                                          selection_mode="single")
-                        col_numerical_is_proxy_bool = yesno_2_bool(col_numerical_is_proxy)
-                        col_numerical_type = st.selectbox("What kind of numerical data is this?")
+                        col_numerical_is_main = st.pills("Is this a central value or a companion confidence interval value?",
+                                                         options=["Central Value", "Confidence or Error value", "Interval of Confidence or Error"], 
+                                                         help="Central value is the headline number (24°C), confidence or error value is the value at a confidence interval (21°C), interval of confidence or error is for example 5% or 95%",
+                                                         selection_mode="single")
+                        if col_numerical_is_main:
+                            match col_numerical_is_main:
+                                case "Central Value":
+                                    col_numerical_is_proxy = st.pills("Is this a proxy?",
+                                                                                                options=["Yes", "No"],
+                                                                                                default="Yes", 
+                                                                                                required=True, 
+                                                                                                selection_mode="single")
+                                    if col_numerical_is_proxy:
+                                        col_numerical_is_proxy_bool = yesno_2_bool(col_numerical_is_proxy)
+                                        col_numerical_type_measure = st.selectbox("What does this numerical data measure?", 
+                                                                                  options=placeholder_options,)
+                                        if col_numerical_type_measure:
+                                            col_numerical_type_method = st.selectbox("How was this unit measured?", 
+                                                                                     options=placeholder_options)
+                                            if col_numerical_type_method:
+                                                col_numerical_type_calibration = st.selectbox("How was this measure calibrated?",
+                                                                                              options=placeholder_options)
+                                case "Confidence or Error Value":
+                                    col_numerical_confval_upperorlower = st.pills("Is this an upper or lower confidencevalue?",
+                                                                                     options=["Upper", "Lower"])
+                                    col_numerical_confval_companionto = st.selectbox("What column is the central value?",
+                                                                                        options=df.columns)
+                                case "Interval of Confidence or Error":
+                                    col_numerical_confint_upperorlower = st.pills("Is this an upper or lower confidence interval?",
+                                                                                     options=["Upper", "Lower"])
+                                    col_numerical_confint_companionto = st.selectbox("What column is the confidence value?",
+                                                                                     options=df.columns)
                     case "Record Metadata":
                         col_metadata_options = [
                                                 "Location", 
                                                 "Season", 
-                                                "Timeslice",
                                                 "Age", 
                                                 "Age Model", 
                                                 "Length along core",
-                                                "Elevation",
                                                 "Species"
                                                 ]
                         col_metadata = st.pills("What kind of metadata is this?",
                                                 options=col_metadata_options)
+                        if col_metadata:
+                            match col_metadata:
+                                case "Location":
+                                    col_metadata_location_options = ["Latitude", "Longitude", "Elevation", "Location Age", "WKB", "WKT", "Other"]
+                                    col_metadata_location = st.pills(label="What location information is this?",
+                                                                     options=col_metadata_location_options, 
+                                                                     selection_mode="single",)
+                                case "Season":
+                                    st.write("Please review the unique seasons found in this column")
+                                    season_markdown_list = """"""
+                                    for season in list(df[column].unique()):
+                                        season_markdown_list += f"* {season}\n"
+                                    st.markdown(season_markdown_list)
+                                case "Age":
+                                    col_metadata_age_unit_options = ["Years before present",
+                                                                     "Thousands of years before present",
+                                                                     "Millions of years before present"]
+                                    col_metadata_age_unit = st.pills(label="What are the units of this column?",
+                                                                     options=col_metadata_age_unit_options,
+                                                                     selection_mode="single")
+                                    col_metadata_age_zero = st.pills(label="What is the zero calendar year for this column?",
+                                                                     options=["1950", "2000", "Other"])
+                                    if col_metadata_age_zero:
+                                        if col_metadata_age_zero == "Other":
+                                            zero_year = st.number_input("What is the other zero year?", 
+                                                            value=2000,
+                                                            step=10)
+                                        else: 
+                                            zero_year = int(col_metadata_age_zero)                                            
+                                case "Age Model":
+                                    st.write("Please review the unique Age Models found in this column: ")
+                                    age_model_markdown_list = ""
+                                    for age_model in list(df[column].unique()):
+                                        age_model_markdown_list += f"* {age_model}"
+                                    st.markdown(age_model_markdown_list)
+                                case "Length along core":
+                                    col_metadata_corelength_options = ["millimeters", "centimeters", "meters"]
+                                    col_metadata_corelength_unit = st.pills(label="What are the units for the length along the core?",
+                                                                            options=col_metadata_corelength_options,
+                                                                            selection_mode="single")
+                                case "Species":
+                                    species_emoji = ['😻', '🐵', '🐶', '🐺', '🦁', '🐯', 
+                                                     '🦒', '🦊', '🦝', '🐮', '🐷', '🐗', 
+                                                     '🐭', '🐹', '🐰', '🐻', '🐨', '🐼', 
+                                                     '🐸', '🦓', '🐴', '🫎', '🫏', '🦄', 
+                                                     '🐔', '🐲', '🐒', '🦍', '🦧', '🐩', 
+                                                     '🐕', '🐈', '🐈', '🐅', '🐎', '🦌', 
+                                                     '🦬', '🦏', '🦛', '🐂', '🐃', '🐄', 
+                                                     '🐖', '🐏', '🐑', '🐐', '🐪', '🐫', 
+                                                     '🦙', '🦘', '🦥', '🦨', '🦡', '🐘', 
+                                                     '🦣', '🐁', '🐀', '🦔', '🐇', '🐿', 
+                                                     '🦫', '🦎', '🐊', '🐢', '🐍', '🐉', 
+                                                     '🦕', '🦖', '🦦', '🦈', '🐬', '🦭', 
+                                                     '🐳', '🐋', '🐟', '🐠', '🐡', '🦐', 
+                                                     '🦑', '🐙', '🦞', '🦀', '🪼', '🦆', 
+                                                     '🐓', '🦃', '🦅', '🕊', '🦢', '🦜', 
+                                                     '🐦', '🪿', '🦩', '🦚', '🦉', '🦤', 
+                                                     '🐥', '🐤', '🐣', '🦇', '🦋', '🐌', 
+                                                     '🐛', '🦟', '🪰', '🪱', '🦗', '🐜', 
+                                                     '🪳', '🐝', '🪲', '🐞', '🦂', '🕷', 
+                                                     '🦠']
+                                    st.warning(icon=rchoice(species_emoji),
+                                               body="We're still working on implementing the species functionality for the P2F Portal.")
                     case "Reference Data":
-                        pass
+                        st.warning(icon="📚",
+                                   body="Thank you for indicating the references, this feature is currently not implemented.")
                     case "Other/Ignore":
-                        pass
+                        st.warning(icon="⚠️",
+                                   body="This feature is not currently implemented, please let the developer know what kind of data you need to add")
 
