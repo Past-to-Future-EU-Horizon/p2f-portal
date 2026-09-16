@@ -22,7 +22,7 @@ with st.sidebar.container(border=True):
                 link below:""")
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
-st.sidebar.text("P2F Portal v0.0.47")
+st.sidebar.text("P2F Portal v0.0.48")
 
 welcome_markdown = """
 This portal is for the Past 2 Future project, 
