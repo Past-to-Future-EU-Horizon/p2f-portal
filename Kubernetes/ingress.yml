@@ -5,7 +5,11 @@ metadata:
   annotations:
     acme.cert-manager.io/http01-edit-in-place: "true"
     cert-manager.io/cluster-issuer: harica
-    ingress.citrix.com/insecure-termination: redirect
+    ingress.citrix.com/insecure-termination: 
+    ingress.citrix.com/backend-httpprofile: '{"app-1": {"dropinvalreqs":"enabled",
+      "websocket" : "enabled"}}'
+    ingress.citrix.com/frontend-httpprofile: '{"dropinvalreqs":"enabled", "websocket"
+      : "enabled"}'
 spec:
   ingressClassName: nsic-vpx
   rules:
