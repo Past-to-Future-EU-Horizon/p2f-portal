@@ -27,7 +27,7 @@ parent_folder = pathlib.Path("")
 add_dataset_path = list(parent_folder.rglob("Add_Dataset.py"))[0]
 st.link_button(
     label="Add Dataset", 
-    url=f"http://localhost:8082/Add_Dataset?dataset_id=new"
+    url=f"/Add_Dataset?dataset_id=new"
 )
 
 st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
@@ -122,7 +122,7 @@ if len(edf) > 0:
                 # dataset_column_dict[r][c].text(edf.loc[dfc].Authors)
                 dataset_column_dict[r][c].link_button(
                     "Open Dataset",
-                    url=f"http://localhost:8082/Dataset_Detail?dataset_id={edf.loc[dfc].UUID}",
+                    url=f"/dataset-detail?dataset_id={edf.loc[dfc].UUID}",
                 )
             dfc += 1
             c += 1
