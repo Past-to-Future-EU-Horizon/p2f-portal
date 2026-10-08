@@ -57,7 +57,7 @@ def get_datasets():
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
-    datasets = client.datasets.list_remote_datasets(is_new_p2f=True)
+    datasets = client.datasets.list_remote_datasets(is_new_p2f=True, is_sub_dataset=False)
     # datasets = [x.model_dump_json(exclude_unset=True) for x in datasets]
     dataset_df = pd.DataFrame(columns=["Title", "UUID", "P2F_Original", "Subdataset"])
     c = 0
