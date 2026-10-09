@@ -5,6 +5,7 @@ HomePage = st.Page("Past_2_Future_Portal.py", title="Past 2 Future Portal", url_
 SourceDatasets = st.Page("pages/01_Source_Datasets.py", title="Source Datasets", url_path="/source-datasets", icon="♻️")
 NewDatasets = st.Page("pages/02_New_Datasets.py", title="New Datasets", url_path="/p2f-datasets", icon="🆕")
 AddDataset = st.Page("new_Add_Dataset.py", title="Add a Dataset", url_path="/add-dataset", icon="➕")
+Locations = st.Page("Locations.py", title="Locations", url_path="/locations", icon="🗺️")
 # Legal
 PrivacyPolicy = st.Page("Privacy_Policy.py", title="Privacy Policy", url_path="/privacy-policy", icon="🔒")
 # Hidden nav
@@ -17,7 +18,8 @@ nav = st.navigation({"Home": [HomePage],
                      "Datasets": [SourceDatasets, 
                                   NewDatasets, 
                                   AddDataset, 
-                                  DatasetDetail], 
+                                  DatasetDetail, 
+                                  Locations], 
                      "Other": [PrivacyPolicy, 
                                LoginPage]})
 nav.run()
