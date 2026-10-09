@@ -207,13 +207,13 @@ if "dataset_id" in st.query_params.keys():
                 not in [str(y.location_identifier) for y in dataset_locations]
             ]
             dataset_locations += bdata
+        logger.debug(f"Dataset locations after request: {dataset_locations}")
         dataset_locations = [x.model_dump(exclude_unset=True) for x in dataset_locations]
         dataset_locations = pd.DataFrame(dataset_locations)
         # st.dataframe(dataset_locations)
         dataset_map = folium.Map(
             location=[
-                dataset_locations.latitude.mean(),
-                dataset_locations.longitude.mean(),
+                0, 0
             ],
             zoom_start=1,
             width=1300,
