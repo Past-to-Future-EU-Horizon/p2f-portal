@@ -48,7 +48,7 @@ for name, loclist in get_locations().items():
     lmark = folium.Marker(
                 location=loclist[:2], 
                 tooltip=loclist[-1], 
-                icon=folium.Icon(color="#db691e")
+                icon=folium.Icon(color="orange", icon="cog")
                 ).add_to(location_map)
 
-st_folium(location_map)
+st_folium(location_map, width=800)
