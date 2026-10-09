@@ -42,7 +42,7 @@ def get_locations() -> dict:
     locations = {x.location_name:[x.latitude, x.longitude, x.elevation, x.location_code] for x in locations}
     return locations
 
-location_map = folium.Map(location=(0, 0), zoom_start=3, max_zoom=15)
+location_map = folium.Map(location=(0, 0), zoom_start=1, max_zoom=15)
 
 for name, loclist in get_locations().items():
     lmark = folium.Marker(
