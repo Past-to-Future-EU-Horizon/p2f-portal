@@ -23,7 +23,7 @@ st.set_page_config(layout="wide")
 
 st.logo("./p2f-portal/assets/P2F_text_transparent_MR.png")
 st.image("./p2f-portal/assets/P2F_text_transparent_MR.png")
-st.title("Explore Source Datasets")
+st.title("Explore Dataset Locations")
 
 st.sidebar.image("./p2f-portal/assets/EN_FundedbytheEU_RGB_POS.png")
 st.sidebar.text(disclosure_text.disclosure_text)
@@ -34,7 +34,7 @@ with st.sidebar.container(border=True):
                 link below:""")
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
-st.markdown("""On this page you will find datasets that are being re-used by the Past to Future consortium. """)
+st.markdown("""Locations of data that is being re-used in the Past to Future project. . """)
 
 def get_locations() -> dict:
     client = P2F_Client(hostname=P2F_API_HOSTNAME, email=P2F_PORTAL_EMAIL_ADDRESS, token=P2F_PORTAL_TOKEN)
@@ -42,7 +42,7 @@ def get_locations() -> dict:
     locations = {x.location_name:[x.latitude, x.longitude, x.elevation, x.location_code] for x in locations}
     return locations
 
-location_map = folium.Map(location=(0, 0), zoom_start=1, max_zoom=15)
+location_map = folium.Map(location=(0, 0), zoom_start=2, max_zoom=15)
 
 for name, loclist in get_locations().items():
     lmark = folium.Marker(
