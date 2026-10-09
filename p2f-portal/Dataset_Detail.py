@@ -163,35 +163,37 @@ if "dataset_id" in st.query_params.keys():
                 if x.sub_dataset_name == selected_subdataset
             ][0]
         )
-        measures = list({x.measure for x in datatypes})
-        selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
-        sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
-        # st.write(sub_measures)
-        selected_sub_data_type = st.pills(
-            "Sub Data Types:", options=sub_measures, default=sub_measures[0]
-        )
-        selected_data_type_obj = [
-            x
-            for x in datatypes
-            if x.measure == selected_measure and x.method == selected_sub_data_type
-        ][0]
-        # st.write(selected_data_type_obj)
-        selected_data = get_graphable_data(
-            dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id
-        )
-        # st.write(selected_data)
-        graphable_data = pd.DataFrame(
-            [x.model_dump(exclude_unset=True) for x in selected_data]
-        )
-        st.dataframe(graphable_data)
-        violin = px.violin(
-            graphable_data,
-            x="value",
-            title=f"Data Preview: {selected_measure}",
-            subtitle=selected_sub_data_type,
-            labels={"value": selected_data_type_obj.unit_of_measurement},
-        )
-        st.plotly_chart(violin)
+        if datatypes:
+            if len(datatypes) > 0:
+                measures = list({x.measure for x in datatypes})
+                selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
+                sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
+                # st.write(sub_measures)
+                selected_sub_data_type = st.pills(
+                    "Sub Data Types:", options=sub_measures, default=sub_measures[0]
+                )
+                selected_data_type_obj = [
+                    x
+                    for x in datatypes
+                    if x.measure == selected_measure and x.method == selected_sub_data_type
+                ][0]
+                # st.write(selected_data_type_obj)
+                selected_data = get_graphable_data(
+                    dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id
+                )
+                # st.write(selected_data)
+                graphable_data = pd.DataFrame(
+                    [x.model_dump(exclude_unset=True) for x in selected_data]
+                )
+                st.dataframe(graphable_data)
+                violin = px.violin(
+                    graphable_data,
+                    x="value",
+                    title=f"Data Preview: {selected_measure}",
+                    subtitle=selected_sub_data_type,
+                    labels={"value": selected_data_type_obj.unit_of_measurement},
+                )
+                st.plotly_chart(violin)
 
         st.subheader("Data Geography")
 
