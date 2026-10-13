@@ -138,24 +138,29 @@ if "dataset_id" in st.query_params.keys():
     st.link_button(
         "View Dataset's Home Repository", url=f"https://doi.org/{dataset_data.doi}"
     )
-    
+    # Search for sub-datasets with the client
     subdatasets = get_subdatasets(doi=dataset_data.doi)
+    # Create a {dataset_id: pydantic Dataset}
     subdatasets = {
         str(x.dataset_id): get_dataset(x.dataset_id)
         for x in subdatasets
     }
-    # st.write(subdatasets)
+    # If there are sub-datasets
     if len(subdatasets.keys()) > 0:
+        # create the sub-dataset header
         st.subheader("Subdatasets")
+        # Make the sub-datasets selectable, default is first item in list
         selected_subdataset = st.pills(
             "Subdatasets:",
             options=[x.sub_dataset_name for x in list(subdatasets.values())],
             default=[x.sub_dataset_name for x in subdatasets.values()][0],
         )
+        # Collect together all of the dataset_ids for parent and children
         all_dataset_uuids = [dataset_id]
         all_dataset_uuids += [x for x in list(subdatasets.keys())]
         # st.write(all_dataset_uuids)
         st.header("Data Explorer")
+        # Get the data types for the selected sub-dataset
         datatypes = get_dataset_datatypes(
             dataset_id=[
                 x.dataset_id
@@ -163,19 +168,32 @@ if "dataset_id" in st.query_params.keys():
                 if x.sub_dataset_name == selected_subdataset
             ][0]
         )
+        # If there are data-types
         if datatypes:
             if len(datatypes) > 0:
+                # list a set of the measures 
                 measures = list({x.measure for x in datatypes})
+                # User selects the measure, default to first measure
                 selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
-                sub_measures = [x.method for x in datatypes if x.measure == selected_measure]
-                # st.write(sub_measures)
-                selected_sub_data_type = st.pills(
-                    "Sub Data Types:", options=sub_measures, default=sub_measures[0]
+                # list the methods of measurement
+                measure_methods = list(set([x.method for x in datatypes if x.measure == selected_measure]))
+                # User selects the method, default to first method
+                selected_measure_method = st.pills(
+                    "Method of Measurement:", options=measure_methods, default=measure_methods[0]
                 )
+                # list the calibrations
+                measure_calibration = list(set([x.calibration 
+                                       for x in datatypes 
+                                       if x.measure == selected_measure 
+                                       and x.method == selected_measure_method]))
+                selected_measure_calibration = st.pills("Calibration:", options=measure_calibration, default=measure_calibration[0])
+
                 selected_data_type_obj = [
                     x
                     for x in datatypes
-                    if x.measure == selected_measure and x.method == selected_sub_data_type
+                    if x.measure == selected_measure 
+                    and x.method == selected_measure_method
+                    and x.calibration == selected_measure_calibration
                 ][0]
                 # st.write(selected_data_type_obj)
                 selected_data = get_graphable_data(
@@ -185,12 +203,13 @@ if "dataset_id" in st.query_params.keys():
                 graphable_data = pd.DataFrame(
                     [x.model_dump(exclude_unset=True) for x in selected_data]
                 )
-                st.dataframe(graphable_data)
+                st.dataframe(graphable_data["value"])
+                
                 violin = px.violin(
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
-                    subtitle=selected_sub_data_type,
+                    subtitle=selected_measure_method,
                     labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
                 st.plotly_chart(violin)
