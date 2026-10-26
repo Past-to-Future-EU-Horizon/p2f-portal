@@ -1,3 +1,4 @@
+from portallogs import logger
 from p2f_client.p2f_client import P2F_Client
 from assets import disclosure_text
 import streamlit as st
@@ -5,6 +6,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import pathlib
 import os
+from inspect import stack
 from datetime import datetime
 from typing import List
 
@@ -12,9 +14,16 @@ de = load_dotenv()
 
 P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
 P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
-P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))
+P2F_API_HTTPS_STRING = os.getenv("P2F_API_HTTPS", default="True")
+match P2F_API_HTTPS_STRING:
+    case "True": 
+        P2F_API_HTTPS = True
+    case "False":
+        P2F_API_HTTPS = False
 P2F_PORTAL_EMAIL_ADDRESS = os.getenv("P2F_PORTAL_EMAIL_ADDRESS")
 P2F_PORTAL_TOKEN = os.getenv("P2F_PORTAL_TOKEN")
+
+logger.debug(f"API Path from variables (True=https, False=http): {P2F_API_HTTPS}://{P2F_API_HOSTNAME}:{P2F_API_PORT}/")
 
 st.set_page_config(layout="wide")
 
@@ -40,23 +49,27 @@ with st.sidebar.container(border=True):
     st.link_button(label="GitHub", url="https://github.com/Past-to-Future-EU-Horizon")
 
 def get_data_types(is_proxy=False) -> List[str]:
+    logger.debug(f"{stack()[0][3]}()")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
+    logger.debug(client.base_url)
     api_data_types = client.harm_data_type.list_data_types(is_proxy=is_proxy)
     measures = list(set([x.measure for x in api_data_types]))
     return measures
 
 def get_datasets():
+    logger.debug(f"{stack()[0][3]}()")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
+    logger.debug(client.base_url)
     datasets = client.datasets.list_remote_datasets(is_new_p2f=True, is_sub_dataset=False)
     # datasets = [x.model_dump_json(exclude_unset=True) for x in datasets]
     dataset_df = pd.DataFrame(columns=["Title", "UUID", "P2F_Original", "Subdataset"])

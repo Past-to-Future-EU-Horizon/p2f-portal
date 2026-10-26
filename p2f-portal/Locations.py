@@ -13,7 +13,12 @@ de = load_dotenv()
 
 P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
 P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
-P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))
+P2F_API_HTTPS_STRING = os.getenv("P2F_API_HTTPS", default="True")
+match P2F_API_HTTPS_STRING:
+    case "True": 
+        P2F_API_HTTPS = True
+    case "False":
+        P2F_API_HTTPS = False
 P2F_PORTAL_EMAIL_ADDRESS = os.getenv("P2F_PORTAL_EMAIL_ADDRESS")
 P2F_PORTAL_TOKEN = os.getenv("P2F_PORTAL_TOKEN")
 

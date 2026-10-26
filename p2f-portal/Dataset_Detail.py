@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import json
 import pathlib
 import os
+from inspect import stack
 from datetime import datetime
 
 logger.debug("PAGE ACCESS: Dataset_Detail.py")
@@ -18,9 +19,16 @@ de = load_dotenv()
 
 P2F_API_HOSTNAME = os.getenv("P2F_API_HOSTNAME")
 P2F_API_PORT = int(os.getenv("P2F_API_PORT", default="443"))
-P2F_API_HTTPS = bool(os.getenv("P2F_API_HTTPS", default="True"))
+P2F_API_HTTPS_STRING = os.getenv("P2F_API_HTTPS", default="True")
+match P2F_API_HTTPS_STRING:
+    case "True": 
+        P2F_API_HTTPS = True
+    case "False":
+        P2F_API_HTTPS = False
 P2F_PORTAL_EMAIL_ADDRESS = os.getenv("P2F_PORTAL_EMAIL_ADDRESS")
 P2F_PORTAL_TOKEN = os.getenv("P2F_PORTAL_TOKEN")
+
+logger.debug(f"API Path from variables (True=https, False=http): {P2F_API_HTTPS}://{P2F_API_HOSTNAME}:{P2F_API_PORT}/")
 
 st.set_page_config(layout="wide")
 
@@ -48,39 +56,46 @@ def load_SVG(svg_name):
 
 
 def get_dataset(dataset_id):
+    logger.debug(f"{stack()[0][3]}({dataset_id})")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
+    logger.debug(client.base_url)
     dataset = client.datasets.get_remote_dataset(dataset_id)
     return dataset
 
 
 def get_subdatasets(doi):
+    logger.debug(f"{stack()[0][3]}({doi})")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
+    logger.debug(client.base_url)
     subdatasets = client.datasets.list_remote_datasets(is_sub_dataset=True, doi=doi)
     return subdatasets
 
 
 def get_dataset_datatypes(dataset_id):
+    logger.debug(f"{stack()[0][3]}({dataset_id})")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
+    logger.debug(client.base_url)
     datatypes = client.harm_data_type.list_data_types(dataset_id=dataset_id)
     return datatypes
 
 
 def get_graphable_data(dataset_id, datatype, flatten=True):
+    logger.debug(f"{stack()[0][3]}()")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
@@ -106,6 +121,7 @@ def get_graphable_data(dataset_id, datatype, flatten=True):
 
 
 def get_location_data(dataset_id):
+    logger.debug(f"{stack()[0][3]}({dataset_id})")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
                         https=P2F_API_HTTPS, 
@@ -222,8 +238,8 @@ if "dataset_id" in st.query_params.keys():
             bdata = [
                 x
                 for x in bdata
-                if str(x.location_identifier)
-                not in [str(y.location_identifier) for y in dataset_locations]
+                if str(x.location_id)
+                not in [str(y.location_id) for y in dataset_locations]
             ]
             dataset_locations += bdata
         logger.debug(f"Dataset locations after request: {dataset_locations}")
