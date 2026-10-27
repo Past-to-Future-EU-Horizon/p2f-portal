@@ -6,6 +6,7 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 from dotenv import load_dotenv
 import json
@@ -95,12 +96,17 @@ def get_dataset_datatypes(dataset_id):
     return datatypes
 
 
-def make_df_userfriendly(datatype: HARM_Data_Type, df: pd.DataFrame):
+def make_df_userfriendly_1(datatype: HARM_Data_Type, df: pd.DataFrame):
     datatype_string = f"{datatype.measure} ({datatype.unit_of_measurement}) - {datatype.method} - {datatype.calibration}"
     df[datatype_string] = df["value"]
     df["Record Hash"] = df["fk_data_record"]
     df["datatype_id"] = [str(x) for x in df["fk_data_type"]]
     return df[[x for x in df.columns if x not in ["value", "fk_data_record", "fk_data_type"]]]
+
+def make_df_userfriendly_2(datatypes, df: pd.DataFrame):
+    df["Record Hash"] = df["fk_data_record"]
+    df["Data Type"] = [datatypes[str(x)] for x in df["fk_data_type"]]
+    return df
 
 def get_graphable_data(dataset_id, datatype_id, flatten=True) -> pd.DataFrame | None:
     logger.debug(f"{stack()[0][3]}()")
@@ -218,35 +224,61 @@ if "dataset_id" in st.query_params.keys():
                 measures = list({x.measure for x in datatypes})
                 # User selects the measure, default to first measure
                 selected_measure = st.pills("Data Types:", options=measures, default=measures[0])
-                # list the methods of measurement
-                measure_methods = list(set([x.method for x in datatypes if x.measure == selected_measure]))
-                # User selects the method, default to first method
-                selected_measure_method = st.pills(
-                    "Method of Measurement:", options=measure_methods, default=measure_methods[0]
-                )
-                # list the calibrations
-                measure_calibration = list(set([x.calibration 
-                                       for x in datatypes 
-                                       if x.measure == selected_measure 
-                                       and x.method == selected_measure_method]))
-                selected_measure_calibration = st.pills("Calibration:", options=measure_calibration, default=measure_calibration[0])
 
-                selected_data_type_obj = [
-                    x
-                    for x in datatypes
-                    if x.measure == selected_measure 
-                    and x.method == selected_measure_method
-                    and x.calibration == selected_measure_calibration
-                ][0]
+                ### MULTILINE PILLS EXPERIMENT
+                measure_suboptions = [x for x in datatypes if x.measure == selected_measure]
+                measure_suboptions = {str(x.datatype_id): f"**{x.measure}** ({x.unit_of_measurement})  \nMethod: {x.method}  \nCalib: {x.calibration}  \n*datatype_id: {x.datatype_id}*" for x in measure_suboptions}
+                measure_columns_width = 255 * len(measure_suboptions)
+                if measure_columns_width > 650:
+                    measure_columns_width = "stretch"
+                measure_columns = {x: y for x, y in zip(range(len(measure_suboptions)), st.columns(len(measure_suboptions), width=measure_columns_width))}
+                measure_suboptions_list = list(measure_suboptions.keys())
+                for dtype_id in measure_suboptions_list:
+                    with measure_columns[measure_suboptions_list.index(dtype_id)].container(border=True, width=250):
+                        st.markdown(measure_suboptions[dtype_id])
+                        st.checkbox(label="Include", key=f"datatype_id::{dtype_id}", value=True)
+                # get the currently check boxes items from the session state dictionary
+                activated_datatypes = {x: y for x, y in st.session_state.items() if x.startswith("datatype_id::")}
+                # filter the check boxes if they are checked   #### extra note, x[len("datatype_id::"):] is a way to get the value of x after the datatype_id:: 
+                activated_datatypes = [x[len("datatype_id::"):] for x, y in activated_datatypes.items() if y == True]
+                # filter out the no-longer active options as there is some stickyness with variable selection
+                activated_datatypes = [x for x in activated_datatypes if x in measure_suboptions_list]
+                
+                graphable_data = {x: get_graphable_data(dataset_id=selected_subdataset_uuid, datatype_id=x) for x in activated_datatypes}
+                graphable_data = pd.concat([x for x in graphable_data.values()], ignore_index=True) 
+
+                graphable_data = make_df_userfriendly_2(datatypes=measure_suboptions, df=graphable_data)   
+
+                # # list the methods of measurement
+                # measure_methods = list(set([x.method for x in datatypes if x.measure == selected_measure]))
+                # # User selects the method, default to first method
+                # selected_measure_method = st.pills(
+                #     "Method of Measurement:", options=measure_methods, default=measure_methods[0]
+                # )
+                # # list the calibrations
+                # measure_calibration = list(set([x.calibration 
+                #                        for x in datatypes 
+                #                        if x.measure == selected_measure 
+                #                        and x.method == selected_measure_method]))
+                # selected_measure_calibration = st.pills("Calibration:", options=measure_calibration, default=measure_calibration[0])
+
+                # selected_data_type_obj = [
+                #     x
+                #     for x in datatypes
+                #     if x.measure == selected_measure 
+                #     and x.method == selected_measure_method
+                #     and x.calibration == selected_measure_calibration
+                # ][0]
                 # st.write(selected_data_type_obj)
-                graphable_data = get_graphable_data(
-                    dataset_id=selected_subdataset_uuid, datatype_id=selected_data_type_obj.datatype_id
-                )
+
+                # graphable_data = get_graphable_data(
+                #     dataset_id=selected_subdataset_uuid, datatype_id=selected_data_type_obj.datatype_id
+                # )
 
                 # Transform the dataframe to be more user friendly
-                friendly_graphable_data = make_df_userfriendly(datatype=selected_data_type_obj, df=graphable_data)
-                with st.expander(key="data_frame_container", expanded=True, label="Single Data Type Data Preview"):
-                    st.dataframe(friendly_graphable_data)
+                # friendly_graphable_data = make_df_userfriendly(datatype=selected_data_type_obj, df=graphable_data)
+                # with st.expander(key="data_frame_container", expanded=True, label="Single Data Type Data Preview"):
+                #     st.dataframe(friendly_graphable_data)
 
                 graph_mode_options = ["Violin Plot", "Box Plot", "Histogram"]
                 graph_mode = st.pills("How would you like to preview the graph of the data?",
@@ -257,23 +289,27 @@ if "dataset_id" in st.query_params.keys():
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
-                    subtitle=selected_measure_method,
-                    labels={"value": selected_data_type_obj.unit_of_measurement},
+                    color="Data Type",
+                    # subtitle=selected_measure_method,
+                    # labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
                 boxplot = px.box(
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
-                    subtitle=selected_measure_method,
-                    labels={"value": selected_data_type_obj.unit_of_measurement},
+                    color="Data Type"
+                    # subtitle=selected_measure_method,
+                    # labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
                 histogram = px.histogram(
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
-                    subtitle=selected_measure_method,
-                    labels={"value": selected_data_type_obj.unit_of_measurement},
+                    color="Data Type"
+                    # subtitle=selected_measure_method,
+                    # labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
+
                 graph_display = {"Violin Plot": violin, "Box Plot": boxplot, "Histogram": histogram,}
                 st.plotly_chart(graph_display[graph_mode])
 
