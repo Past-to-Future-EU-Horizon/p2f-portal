@@ -245,8 +245,13 @@ if "dataset_id" in st.query_params.keys():
 
                 # Transform the dataframe to be more user friendly
                 friendly_graphable_data = make_df_userfriendly(datatype=selected_data_type_obj, df=graphable_data)
+                with st.expander(key="data_frame_container", expanded=True, label="Single Data Type Data Preview"):
+                    st.dataframe(friendly_graphable_data)
 
-                st.dataframe(friendly_graphable_data)
+                graph_mode_options = ["Violin Plot", "Box Plot", "Histogram"]
+                graph_mode = st.pills("How would you like to preview the graph of the data?",
+                                      options=graph_mode_options,
+                                      default=graph_mode_options[0])
                 
                 violin = px.violin(
                     graphable_data,
@@ -255,7 +260,22 @@ if "dataset_id" in st.query_params.keys():
                     subtitle=selected_measure_method,
                     labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
-                st.plotly_chart(violin)
+                boxplot = px.box(
+                    graphable_data,
+                    x="value",
+                    title=f"Data Preview: {selected_measure}",
+                    subtitle=selected_measure_method,
+                    labels={"value": selected_data_type_obj.unit_of_measurement},
+                )
+                histogram = px.histogram(
+                    graphable_data,
+                    x="value",
+                    title=f"Data Preview: {selected_measure}",
+                    subtitle=selected_measure_method,
+                    labels={"value": selected_data_type_obj.unit_of_measurement},
+                )
+                graph_display = {"Violin Plot": violin, "Box Plot": boxplot, "Histogram": histogram,}
+                st.plotly_chart(graph_display[graph_mode])
 
         st.subheader("Data Geography")
 

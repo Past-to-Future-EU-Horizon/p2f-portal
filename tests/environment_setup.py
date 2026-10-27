@@ -5,6 +5,7 @@ from random import randint, choice
 from os import getcwd
 from datetime import datetime
 import socket
+from time import sleep
 import docker
 
 # print(getcwd())
@@ -27,6 +28,17 @@ p2f_portal_port = random_port_wcheck()
 test_run_id = uuid4()
 
 client = docker.from_env()
+
+# Stop old portals
+old_portals = client.containers.list(all=True)
+old_portals = [x for x in old_portals if x.name.startswith("p2f_portal")]
+[x.stop() for x in old_portals]
+sleep(2)
+# Remove old portals
+old_portals = client.containers.list(all=True)
+old_portals = [x for x in old_portals if x.name.startswith("p2f_portal")]
+[x.remove() for x in old_portals]
+
 
 print(f"The portal will run on http://127.0.0.1:{p2f_portal_port}")
 
