@@ -1,4 +1,5 @@
 from p2f_client.p2f_client import P2F_Client
+from p2f_pydantic.harm_data_types import HARM_Data_Type
 from portallogs import logger
 from assets import disclosure_text
 import streamlit as st
@@ -94,7 +95,14 @@ def get_dataset_datatypes(dataset_id):
     return datatypes
 
 
-def get_graphable_data(dataset_id, datatype, flatten=True):
+def make_df_userfriendly(datatype: HARM_Data_Type, df: pd.DataFrame):
+    datatype_string = f"{datatype.measure} ({datatype.unit_of_measurement}) - {datatype.method} - {datatype.calibration}"
+    df[datatype_string] = df["value"]
+    df["Record Hash"] = df["fk_data_record"]
+    df["datatype_id"] = [str(x) for x in df["fk_data_type"]]
+    return df[[x for x in df.columns if x not in ["value", "fk_data_record", "fk_data_type"]]]
+
+def get_graphable_data(dataset_id, datatype_id, flatten=True) -> pd.DataFrame | None:
     logger.debug(f"{stack()[0][3]}()")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
@@ -102,22 +110,39 @@ def get_graphable_data(dataset_id, datatype, flatten=True):
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
-    graphable_data = client.harm_numerical.list_harm_numericals(
-        dataset_id=dataset_id, data_type=datatype
-    )
-    if flatten:
-        return_data = []
-        if graphable_data.data_harmonized_int is not None:
-            return_data += graphable_data.data_harmonized_int
-        if graphable_data.data_harmonized_int_confidence is not None:
-            return_data += graphable_data.data_harmonized_int_confidence
-        if graphable_data.data_harmonized_float is not None:
-            return_data += graphable_data.data_harmonized_float
-        if graphable_data.data_harmonized_float_confidence is not None:
-            return_data += graphable_data.data_harmonized_float_confidence
-        return return_data
-    else:
-        return graphable_data
+    statistics = client.harm_numerical.get_numeric_statistics(dataset_id=dataset_id, datatype_id=datatype_id)
+    logger.debug(f"Statistics: {statistics}")
+    df = None
+    if statistics.count_total > 0:
+        if statistics.count_float_confidence > 0:
+            df = client.harm_numerical.list_harm_numericals(numeric_type="float_confidence", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["float_confidence"]
+        # logger.debug(f"float_confidence dataframe status: {repr(df)}")
+        if statistics.count_float > 0:
+            request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="float", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["float"]
+            # logger.debug(repr(request_new_df))
+            if df == None:
+                df = request_new_df
+            else:
+                df = pd.concat(df, request_new_df)
+        # logger.debug(f"float dataframe status: {repr(df)}")
+        if statistics.count_int_confidence > 0:
+            request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="int_confidence", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["int_confidence"]
+            # logger.debug(repr(request_new_df))
+            if df == None:
+                df = request_new_df
+            else:
+                df = pd.concat(df, request_new_df)
+        # logger.debug(f"int_confidence dataframe status: {repr(df)}")
+        if statistics.count_int > 0:
+            request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="int", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["int"]
+            # logger.debug(repr(request_new_df))
+            if df == None:
+                df = request_new_df
+            else:
+                df = pd.concat(df, request_new_df)
+        # logger.debug(f"int dataframe status: {repr(df)}")
+    return df
+        
 
 
 def get_location_data(dataset_id):
@@ -171,6 +196,12 @@ if "dataset_id" in st.query_params.keys():
             options=[x.sub_dataset_name for x in list(subdatasets.values())],
             default=[x.sub_dataset_name for x in subdatasets.values()][0],
         )
+        selected_subdataset_uuid = [
+                x.dataset_id
+                for x in subdatasets.values()
+                if x.sub_dataset_name == selected_subdataset
+            ][0]
+
         # Collect together all of the dataset_ids for parent and children
         all_dataset_uuids = [dataset_id]
         all_dataset_uuids += [x for x in list(subdatasets.keys())]
@@ -178,11 +209,7 @@ if "dataset_id" in st.query_params.keys():
         st.header("Data Explorer")
         # Get the data types for the selected sub-dataset
         datatypes = get_dataset_datatypes(
-            dataset_id=[
-                x.dataset_id
-                for x in subdatasets.values()
-                if x.sub_dataset_name == selected_subdataset
-            ][0]
+            dataset_id=selected_subdataset_uuid
         )
         # If there are data-types
         if datatypes:
@@ -212,14 +239,14 @@ if "dataset_id" in st.query_params.keys():
                     and x.calibration == selected_measure_calibration
                 ][0]
                 # st.write(selected_data_type_obj)
-                selected_data = get_graphable_data(
-                    dataset_id=all_dataset_uuids[-1], datatype=selected_data_type_obj.datatype_id
+                graphable_data = get_graphable_data(
+                    dataset_id=selected_subdataset_uuid, datatype_id=selected_data_type_obj.datatype_id
                 )
-                # st.write(selected_data)
-                graphable_data = pd.DataFrame(
-                    [x.model_dump(exclude_unset=True) for x in selected_data]
-                )
-                st.dataframe(graphable_data["value"])
+
+                # Transform the dataframe to be more user friendly
+                friendly_graphable_data = make_df_userfriendly(datatype=selected_data_type_obj, df=graphable_data)
+
+                st.dataframe(friendly_graphable_data)
                 
                 violin = px.violin(
                     graphable_data,

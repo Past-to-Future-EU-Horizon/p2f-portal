@@ -3,6 +3,7 @@ from pprint import pprint
 from typing import List, Dict
 from random import randint, choice
 from os import getcwd
+from datetime import datetime
 import socket
 import docker
 
@@ -31,9 +32,12 @@ print(f"The portal will run on http://127.0.0.1:{p2f_portal_port}")
 
 print("Gathering configuration from running Docker P2F-API container")
 
-# Get the current API Container ## TODO make sure it grabs the most recent container
+# Get the latest API Container 
 p2f_api_container = client.containers.list()
-api_container = [x for x in client.containers.list() if x.name.startswith("p2f_api_")][0]
+api_containers = [x for x in client.containers.list() if x.name.startswith("p2f_api_")]
+api_containers = {x.attrs["Created"]: x for x in api_containers}
+api_containers = {datetime.strptime(f"{x.split('.')[0]}Z", "%Y-%m-%dT%H:%M:%SZ"): y for x, y in api_containers.items()}
+api_container = api_containers[max(list(api_containers.keys()))]
 
 # Get the container environment
 api_config = api_container.attrs["Config"]["Env"]
@@ -81,7 +85,7 @@ p2f_portal_container = client.containers.run(image=p2f_portal_image,
                                              remove=True,
                                              environment=portal_environment, 
                                              ports={8082: p2f_portal_port},
-                                             detach=False,
+                                             detach=True,
                                             #  volumes={str(getcwd()): {"bind": "/p2f/portal", "mode": "ro"}},
                                              name=p2f_portal_container_name, 
                                              network=api_network)
