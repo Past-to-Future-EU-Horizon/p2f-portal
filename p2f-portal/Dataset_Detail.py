@@ -106,7 +106,7 @@ def make_df_userfriendly_1(datatype: HARM_Data_Type, df: pd.DataFrame):
 
 def make_df_userfriendly_2(datatypes, df: pd.DataFrame):
     df["Record Hash"] = df["fk_data_record"]
-    df["Data Type"] = [datatypes[str(x)] for x in df["fk_data_type"]]
+    df["Data Type"] = [f"{datatypes[str(x)].method} - {datatypes[str(x)].calibration}" for x in df["fk_data_type"]]
     return df
 
 def get_graphable_data(dataset_id, datatype_id, flatten=True) -> pd.DataFrame | None:
@@ -228,7 +228,7 @@ if "dataset_id" in st.query_params.keys():
 
                 ### MULTILINE PILLS EXPERIMENT
                 measure_suboptions = [x for x in datatypes if x.measure == selected_measure]
-                measure_suboptions = {str(x.datatype_id): f"**{x.measure}** ({x.unit_of_measurement})  \nMethod: {x.method}  \nCalib: {x.calibration}  \n*datatype_id: {x.datatype_id}*" for x in measure_suboptions}
+                measure_suboptions = {str(x.datatype_id): x for x in measure_suboptions}
                 measure_columns_width = 255 * len(measure_suboptions)
                 if measure_columns_width > 800:
                     measure_columns_width = "stretch"
@@ -236,7 +236,7 @@ if "dataset_id" in st.query_params.keys():
                 measure_suboptions_list = list(measure_suboptions.keys())
                 for dtype_id in measure_suboptions_list:
                     with measure_columns[measure_suboptions_list.index(dtype_id)].container(border=True, width=250):
-                        st.markdown(measure_suboptions[dtype_id])
+                        st.markdown(f"**{measure_suboptions[dtype_id].measure} ({measure_suboptions[dtype_id].unit_of_measurement})**  \nMethod: {measure_suboptions[dtype_id].method}  \nCalib: {measure_suboptions[dtype_id].calibration}  \n    {measure_suboptions[dtype_id].datatype_id}")
                         st.checkbox(label="Include in graph", key=f"datatype_id::{dtype_id}", value=True)
                 # get the currently check boxes items from the session state dictionary
                 activated_datatypes = {x: y for x, y in st.session_state.items() if x.startswith("datatype_id::")}
@@ -255,7 +255,7 @@ if "dataset_id" in st.query_params.keys():
                                       options=graph_mode_options,
                                       default=graph_mode_options[0])
 
-                graph_height = 400 + (len(measure_suboptions) * 100)
+                graph_height = 400 + (len(measure_suboptions) * 75)
                 
                 violin = px.violin(
                     graphable_data,
