@@ -1,6 +1,7 @@
 from p2f_client.p2f_client import P2F_Client
 from p2f_pydantic.harm_data_types import HARM_Data_Type
 from portallogs import logger
+from shared import graph_colors
 from assets import disclosure_text
 import streamlit as st
 import folium
@@ -229,14 +230,14 @@ if "dataset_id" in st.query_params.keys():
                 measure_suboptions = [x for x in datatypes if x.measure == selected_measure]
                 measure_suboptions = {str(x.datatype_id): f"**{x.measure}** ({x.unit_of_measurement})  \nMethod: {x.method}  \nCalib: {x.calibration}  \n*datatype_id: {x.datatype_id}*" for x in measure_suboptions}
                 measure_columns_width = 255 * len(measure_suboptions)
-                if measure_columns_width > 650:
+                if measure_columns_width > 800:
                     measure_columns_width = "stretch"
                 measure_columns = {x: y for x, y in zip(range(len(measure_suboptions)), st.columns(len(measure_suboptions), width=measure_columns_width))}
                 measure_suboptions_list = list(measure_suboptions.keys())
                 for dtype_id in measure_suboptions_list:
                     with measure_columns[measure_suboptions_list.index(dtype_id)].container(border=True, width=250):
                         st.markdown(measure_suboptions[dtype_id])
-                        st.checkbox(label="Include", key=f"datatype_id::{dtype_id}", value=True)
+                        st.checkbox(label="Include in graph", key=f"datatype_id::{dtype_id}", value=True)
                 # get the currently check boxes items from the session state dictionary
                 activated_datatypes = {x: y for x, y in st.session_state.items() if x.startswith("datatype_id::")}
                 # filter the check boxes if they are checked   #### extra note, x[len("datatype_id::"):] is a way to get the value of x after the datatype_id:: 
@@ -249,47 +250,20 @@ if "dataset_id" in st.query_params.keys():
 
                 graphable_data = make_df_userfriendly_2(datatypes=measure_suboptions, df=graphable_data)   
 
-                # # list the methods of measurement
-                # measure_methods = list(set([x.method for x in datatypes if x.measure == selected_measure]))
-                # # User selects the method, default to first method
-                # selected_measure_method = st.pills(
-                #     "Method of Measurement:", options=measure_methods, default=measure_methods[0]
-                # )
-                # # list the calibrations
-                # measure_calibration = list(set([x.calibration 
-                #                        for x in datatypes 
-                #                        if x.measure == selected_measure 
-                #                        and x.method == selected_measure_method]))
-                # selected_measure_calibration = st.pills("Calibration:", options=measure_calibration, default=measure_calibration[0])
-
-                # selected_data_type_obj = [
-                #     x
-                #     for x in datatypes
-                #     if x.measure == selected_measure 
-                #     and x.method == selected_measure_method
-                #     and x.calibration == selected_measure_calibration
-                # ][0]
-                # st.write(selected_data_type_obj)
-
-                # graphable_data = get_graphable_data(
-                #     dataset_id=selected_subdataset_uuid, datatype_id=selected_data_type_obj.datatype_id
-                # )
-
-                # Transform the dataframe to be more user friendly
-                # friendly_graphable_data = make_df_userfriendly(datatype=selected_data_type_obj, df=graphable_data)
-                # with st.expander(key="data_frame_container", expanded=True, label="Single Data Type Data Preview"):
-                #     st.dataframe(friendly_graphable_data)
-
                 graph_mode_options = ["Violin Plot", "Box Plot", "Histogram"]
                 graph_mode = st.pills("How would you like to preview the graph of the data?",
                                       options=graph_mode_options,
                                       default=graph_mode_options[0])
+
+                graph_height = 400 + (len(measure_suboptions) * 100)
                 
                 violin = px.violin(
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
                     color="Data Type",
+                    color_discrete_sequence=graph_colors,
+                    height=graph_height,
                     # subtitle=selected_measure_method,
                     # labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
@@ -297,7 +271,9 @@ if "dataset_id" in st.query_params.keys():
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
-                    color="Data Type"
+                    color="Data Type", 
+                    color_discrete_sequence=graph_colors,
+                    height=graph_height,
                     # subtitle=selected_measure_method,
                     # labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
@@ -305,13 +281,16 @@ if "dataset_id" in st.query_params.keys():
                     graphable_data,
                     x="value",
                     title=f"Data Preview: {selected_measure}",
-                    color="Data Type"
+                    color="Data Type",
+                    color_discrete_sequence=graph_colors,
+                    height=graph_height,
                     # subtitle=selected_measure_method,
                     # labels={"value": selected_data_type_obj.unit_of_measurement},
                 )
 
                 graph_display = {"Violin Plot": violin, "Box Plot": boxplot, "Histogram": histogram,}
-                st.plotly_chart(graph_display[graph_mode])
+                st.plotly_chart(graph_display[graph_mode], 
+                                height=graph_height,)
 
         st.subheader("Data Geography")
 
