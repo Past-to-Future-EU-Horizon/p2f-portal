@@ -1327,7 +1327,7 @@ wheels = [
 
 [[package]]
 name = "p2f-portal"
-version = "0.0.68"
+version = "0.0.69"
 source = { editable = "." }
 dependencies = [
     { name = "furl" },
