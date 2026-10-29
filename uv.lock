@@ -1309,7 +1309,7 @@ wheels = [
 
 [[package]]
 name = "p2f-client-py"
-version = "0.0.42"
+version = "0.0.43"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "furl" },
@@ -1320,9 +1320,9 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/af/be/ab30e9e5725f18fcbd8063c704beeae945a743148bfcf7c9ab40ddc79434/p2f_client_py-0.0.42.tar.gz", hash = "sha256:98dad2a307a4d3ede76b16588e1e4bacbf339f158f21e3e31c61bc0b3586e0b3", size = 17130, upload-time = "2026-10-28T14:40:29.074Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/5b/5f1f0fd39ff0905bb00ccd9f488f229256d8ed50e37a6714a39976e856be/p2f_client_py-0.0.43.tar.gz", hash = "sha256:d9a361f6d3823d487e4d88c7b1e0dd97fe2c47dc656f65f088e232a43b322058", size = 17464, upload-time = "2026-10-29T09:37:27.381Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/3a/013e34426079ff58675f4c073edb36f075082e9a5df37457633321442048/p2f_client_py-0.0.42-py3-none-any.whl", hash = "sha256:98e6b011e32a77c9d8e6032981797445f1cce7910a0d7e90f9f5620b8b13bf40", size = 24259, upload-time = "2026-10-28T14:40:27.684Z" },
+    { url = "https://files.pythonhosted.org/packages/68/ad/517d1462be9b96f582f5d6e45a9591d92cb6b43aab0ebac66cdaffe96cdc/p2f_client_py-0.0.43-py3-none-any.whl", hash = "sha256:e8ccaf558909abc2374d8b2213e9a4edf268ea985ea14a8a792a1b484378823a", size = 24379, upload-time = "2026-10-29T09:37:26.263Z" },
 ]
 
 [[package]]

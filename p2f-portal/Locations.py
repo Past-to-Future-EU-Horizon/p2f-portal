@@ -42,7 +42,11 @@ with st.sidebar.container(border=True):
 st.markdown("""Locations of data that is being re-used in the Past to Future project. . """)
 
 def get_locations() -> dict:
-    client = P2F_Client(hostname=P2F_API_HOSTNAME, email=P2F_PORTAL_EMAIL_ADDRESS, token=P2F_PORTAL_TOKEN)
+    client = P2F_Client(hostname=P2F_API_HOSTNAME,
+                        port=P2F_API_PORT,
+                        https=P2F_API_HTTPS, 
+                        email=P2F_PORTAL_EMAIL_ADDRESS, 
+                        token=P2F_PORTAL_TOKEN)
     locations = client.harm_location.list_harm_locations(active_locations=True)
     locations = {x.location_name:[x.latitude, x.longitude, x.elevation, x.location_code] for x in locations}
     return locations

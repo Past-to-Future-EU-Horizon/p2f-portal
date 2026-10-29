@@ -6,10 +6,12 @@ SourceDatasets = st.Page("pages/01_Source_Datasets.py", title="Source Datasets",
 NewDatasets = st.Page("pages/02_New_Datasets.py", title="New Datasets", url_path="/p2f-datasets", icon="🆕")
 AddDataset = st.Page("new_Add_Dataset.py", title="Add a Dataset", url_path="/add-dataset", icon="➕")
 Locations = st.Page("Locations.py", title="Locations", url_path="/locations", icon="🗺️")
+DataTypes = st.Page("DataTypes.py", title="Data Types", url_path="/data-types", icon="🎨")
 # Legal
 PrivacyPolicy = st.Page("Privacy_Policy.py", title="Privacy Policy", url_path="/privacy-policy", icon="🔒")
 # Hidden nav
 DatasetDetail = st.Page("Dataset_Detail.py", title="Dataset Details", url_path="/dataset-detail", visibility="hidden", icon="🔍")
+DatatypeDetail = st.Page("DataType_Detail.py", title="Datatype Details", url_path="datatype-detail", visibility="hidden", icon="🔍")
 LoginPage = st.Page("login.py", title="P2F Login", url_path="/login", icon="🪵")
 # UploadData = st.Page("upload_data.py", title="Upload Data", url_path="/upload-data", visibility="hidden", icon="⬆️")
 
@@ -17,9 +19,11 @@ LoginPage = st.Page("login.py", title="P2F Login", url_path="/login", icon="🪵
 nav = st.navigation({"Home": [HomePage],
                      "Datasets": [SourceDatasets, 
                                   NewDatasets, 
-                                  AddDataset, 
+                                #   AddDataset, 
                                   DatasetDetail, 
-                                  Locations], 
+                                  Locations,
+                                  DataTypes,
+                                  DatatypeDetail], 
                      "Other": [PrivacyPolicy, 
                                LoginPage]})
 nav.run()
