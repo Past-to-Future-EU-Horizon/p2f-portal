@@ -50,10 +50,10 @@ def get_datatypes(active_datatypes: bool=True):
     return datatypes
 
 
-active_datatypes_toggle = st.toggle("Show only datatypes with data", 
-                             value=True, key="active_datatypes_toggle_key")
+# active_datatypes_toggle = st.toggle("Show only datatypes with data", 
+#                              value=True, key="active_datatypes_toggle_key")
 
-datatypes = get_datatypes(active_datatypes=st.session_state["active_datatypes_toggle_key"])
+datatypes = get_datatypes()
 
 # Categorize the datatypes
 unique_datatype_measures = {x.measure for x in datatypes}

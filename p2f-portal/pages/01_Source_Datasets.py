@@ -83,19 +83,19 @@ def get_datasets():
 # We have too many starting options, as if the user wants a source or proxy data type
 ## Source e.g.: Mg/Ca ratio
 ## Proxy e.g.: Sea surface temperatures
-proxy_flag_option = st.pills("Source or Proxy Data?", 
-                             options=["Source", "Proxy"], )
+# proxy_flag_option = st.pills("Source or Proxy Data?", 
+#                              options=["Source", "Proxy"], )
 
-if proxy_flag_option is not None:
-    # Only show further options if the user has selected source or proxy
-    proxy_boolean = False
-    if proxy_flag_option == "Proxy":
-        proxy_boolean = True
-    try: 
-        server_data_types = get_data_types()
-    except Exception: 
-        server_data_types = ["Coming soon"]
-    data_theme_selection = st.pills("Data Themes", options=get_data_types(is_proxy=proxy_boolean))
+# if proxy_flag_option is not None:
+#     # Only show further options if the user has selected source or proxy
+#     proxy_boolean = False
+#     if proxy_flag_option == "Proxy":
+#         proxy_boolean = True
+#     try: 
+#         server_data_types = get_data_types()
+#     except Exception: 
+#         server_data_types = ["Coming soon"]
+#     data_theme_selection = st.pills("Data Themes", options=get_data_types(is_proxy=proxy_boolean))
 
 # dc0r0, dc1r0 = st.columns(2)
 
