@@ -122,7 +122,8 @@ def get_location_data(datatype_id):
     locations = client.harm_location.list_harm_locations(datatype_id=datatype_id)
     return locations
 
-def get_related_datasets(datatype_id):
+def get_related_datasets(datatype_id, parents_only: bool=True):
+    ## parents only is to get only the parent datasets
     logger.debug(f"{stack()[0][3]}({datatype_id})")
     client = P2F_Client(hostname=P2F_API_HOSTNAME, 
                         port=P2F_API_PORT, 
@@ -130,7 +131,14 @@ def get_related_datasets(datatype_id):
                         token=P2F_PORTAL_TOKEN, 
                         # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
                         email=P2F_PORTAL_EMAIL_ADDRESS)
-    datasets = client.datasets.list_remote_datasets()
+    datasets = client.datasets.list_remote_datasets(datatype_id=datatype_id)
+    if parents_only:
+        parents = []
+        for dataset in {x.doi for x in datasets}: # using a set to get only unique DOI values
+            parents.append(client.datasets.list_remote_datasets(doi=dataset, is_sub_dataset=False)[0])
+        return parents
+    else:
+        return datasets
 
 if "datatype_id" in st.query_params.keys():
     datatype_id = st.query_params["datatype_id"]
@@ -191,3 +199,11 @@ if "datatype_id" in st.query_params.keys():
     graph_display = {"Violin Plot": violin, "Box Plot": boxplot, "Histogram": histogram,}
     st.plotly_chart(graph_display[graph_mode], 
                     height=graph_height,)
+
+    st.subheader("Related Datasets")
+    related_datasets = get_related_datasets(datatype_id=datatype_id, parents_only=True)
+    for dataset in related_datasets:
+        with st.container(border=True):
+            st.subheader(dataset.title)
+            st.link_button("Go to dataset", 
+                           url=f"/dataset-detail?dataset_id={dataset.dataset_id}")
