@@ -253,7 +253,8 @@ if "dataset_id" in st.query_params.keys():
                 graph_mode_options = ["Violin Plot", "Box Plot", "Histogram"]
                 graph_mode = st.pills("How would you like to preview the graph of the data?",
                                       options=graph_mode_options,
-                                      default=graph_mode_options[0])
+                                      default=graph_mode_options[0],
+                                      required=True)
 
                 graph_height = 400 + (len(measure_suboptions) * 75)
                 
