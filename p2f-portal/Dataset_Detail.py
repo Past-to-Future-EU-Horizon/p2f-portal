@@ -127,7 +127,7 @@ def get_graphable_data(dataset_id, datatype_id, flatten=True) -> pd.DataFrame | 
         if statistics.count_float > 0:
             request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="float", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["float"]
             # logger.debug(repr(request_new_df))
-            if df == None:
+            if type(df) == type(None):
                 df = request_new_df
             else:
                 df = pd.concat(df, request_new_df)
@@ -135,7 +135,7 @@ def get_graphable_data(dataset_id, datatype_id, flatten=True) -> pd.DataFrame | 
         if statistics.count_int_confidence > 0:
             request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="int_confidence", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["int_confidence"]
             # logger.debug(repr(request_new_df))
-            if df == None:
+            if type(df) == type(None):
                 df = request_new_df
             else:
                 df = pd.concat(df, request_new_df)
@@ -143,7 +143,7 @@ def get_graphable_data(dataset_id, datatype_id, flatten=True) -> pd.DataFrame | 
         if statistics.count_int > 0:
             request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="int", datatype_id=datatype_id, dataset_id=dataset_id, request_as="pandas")["int"]
             # logger.debug(repr(request_new_df))
-            if df == None:
+            if type(df) == type(None):
                 df = request_new_df
             else:
                 df = pd.concat(df, request_new_df)
