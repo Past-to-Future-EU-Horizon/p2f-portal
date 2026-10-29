@@ -91,7 +91,7 @@ def get_graphable_data(datatype_id, flatten=True) -> pd.DataFrame | None:
             if type(df) == type(None):
                 df = request_new_df
             else:
-                df = pd.concat(df, request_new_df)
+                df = pd.concat([df, request_new_df])
         # logger.debug(f"float dataframe status: {repr(df)}")
         if statistics.count_int_confidence > 0:
             request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="int_confidence", datatype_id=datatype_id, request_as="pandas")["int_confidence"]
@@ -99,7 +99,7 @@ def get_graphable_data(datatype_id, flatten=True) -> pd.DataFrame | None:
             if type(df) == type(None):
                 df = request_new_df
             else:
-                df = pd.concat(df, request_new_df)
+                df = pd.concat([df, request_new_df])
         # logger.debug(f"int_confidence dataframe status: {repr(df)}")
         if statistics.count_int > 0:
             request_new_df = client.harm_numerical.list_harm_numericals(numeric_type="int", datatype_id=datatype_id, request_as="pandas")["int"]
@@ -107,7 +107,7 @@ def get_graphable_data(datatype_id, flatten=True) -> pd.DataFrame | None:
             if type(df) == type(None):
                 df = request_new_df
             else:
-                df = pd.concat(df, request_new_df)
+                df = pd.concat([df, request_new_df])
         # logger.debug(f"int dataframe status: {repr(df)}")
     return df
 
@@ -122,6 +122,16 @@ def get_location_data(datatype_id):
     locations = client.harm_location.list_harm_locations(datatype_id=datatype_id)
     return locations
 
+def get_related_datasets(datatype_id):
+    logger.debug(f"{stack()[0][3]}({datatype_id})")
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    datasets = client.datasets.list_remote_datasets()
+
 if "datatype_id" in st.query_params.keys():
     datatype_id = st.query_params["datatype_id"]
     datatype_data = get_datatype(datatype_id=datatype_id)
@@ -133,8 +143,9 @@ if "datatype_id" in st.query_params.keys():
     dataset_metadata_L.text(f"Units: {datatype_data.unit_of_measurement}")
     dataset_metadata_R.metric("Total Records of this data type",
                               value=datatype_statistics.count_total)
-    dataset_metadata_R.text("datatype_id")
-    dataset_metadata_R.code(f"{datatype_data.datatype_id}")
+    with dataset_metadata_R.container(border=True):
+        st.text("datatype_id")
+        st.code(f"{datatype_data.datatype_id}")
 
     graphable_data = get_graphable_data(datatype_id=datatype_id)
 
