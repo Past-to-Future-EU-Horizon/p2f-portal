@@ -133,7 +133,7 @@ if "datatype_id" in st.query_params.keys():
     dataset_metadata_L.text(f"Units: {datatype_data.unit_of_measurement}")
     dataset_metadata_R.metric("Total Records of this data type",
                               value=datatype_statistics.count_total)
-    dataset_metadata_R.text("dataset_id")
+    dataset_metadata_R.text("datatype_id")
     dataset_metadata_R.code(f"{datatype_data.datatype_id}")
 
     graphable_data = get_graphable_data(datatype_id=datatype_id)
