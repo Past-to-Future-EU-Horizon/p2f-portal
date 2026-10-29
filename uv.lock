@@ -1309,7 +1309,7 @@ wheels = [
 
 [[package]]
 name = "p2f-client-py"
-version = "0.0.45"
+version = "0.0.46"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "furl" },
@@ -1320,9 +1320,9 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fe/e7/b3a5b9ba8c848671463e9132b12a79cbe1ff2809f4a8e68789f94812a832/p2f_client_py-0.0.45.tar.gz", hash = "sha256:edd609611a83f6633d382102a0577d3cbcf38464c2b6d57e711704f18b410e47", size = 17491, upload-time = "2026-10-29T13:31:04.334Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/78/fb/c9298666cbf4f06d26e6ce7e98152d08d53c322a89e08dd5dbb5a20c3edf/p2f_client_py-0.0.46.tar.gz", hash = "sha256:2571738d8f505e9bf33d34d19d5d23f1f011a208389fac0df623889884fadf60", size = 17521, upload-time = "2026-10-29T14:53:02.509Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4d/46/0abb43b943162bd5920fa648170cbf306a6637b0206e1291dee238dde460/p2f_client_py-0.0.45-py3-none-any.whl", hash = "sha256:3700e786e30dd3c4ea102bb6f4a2266faa169d483508fe1d9e88cd2ce176cced", size = 24495, upload-time = "2026-10-29T13:31:02.743Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/eb/1db34a2a4d906f5c8c4b9172647463f59011bca910017ed5f51ed306c5e4/p2f_client_py-0.0.46-py3-none-any.whl", hash = "sha256:78d43e32b827824320c12d48e9bbb8ece8e749d12664129477bb35f0c6494af6", size = 24522, upload-time = "2026-10-29T14:53:01.116Z" },
 ]
 
 [[package]]
@@ -1349,7 +1349,7 @@ dev = [
 requires-dist = [
     { name = "furl", specifier = ">=2.1.4" },
     { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "p2f-client-py", specifier = ">=0.0.45" },
+    { name = "p2f-client-py", specifier = ">=0.0.46" },
     { name = "plotly", specifier = ">=6.3.0" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "streamlit", specifier = ">=1.45.0" },

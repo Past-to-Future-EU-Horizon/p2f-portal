@@ -11,7 +11,8 @@ DataTypes = st.Page("DataTypes.py", title="Data Types", url_path="/data-types", 
 PrivacyPolicy = st.Page("Privacy_Policy.py", title="Privacy Policy", url_path="/privacy-policy", icon="🔒")
 # Hidden nav
 DatasetDetail = st.Page("Dataset_Detail.py", title="Dataset Details", url_path="/dataset-detail", visibility="hidden", icon="🔍")
-DatatypeDetail = st.Page("DataType_Detail.py", title="Datatype Details", url_path="datatype-detail", visibility="hidden", icon="🔍")
+DatatypeDetail = st.Page("DataType_Detail.py", title="Datatype Details", url_path="/datatype-detail", visibility="hidden", icon="🔍")
+LocationDetail = st.Page("Location_Detail.py", title="Location Details", url_path="/location-detail", visibility="hidden", icon="📍")
 LoginPage = st.Page("login.py", title="P2F Login", url_path="/login", icon="🪵")
 # UploadData = st.Page("upload_data.py", title="Upload Data", url_path="/upload-data", visibility="hidden", icon="⬆️")
 
@@ -23,7 +24,8 @@ nav = st.navigation({"Home": [HomePage],
                                   DatasetDetail, 
                                   Locations,
                                   DataTypes,
-                                  DatatypeDetail], 
+                                  DatatypeDetail, 
+                                  LocationDetail], 
                      "Other": [PrivacyPolicy, 
                                LoginPage]})
 nav.run()
