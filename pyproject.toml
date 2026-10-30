@@ -9,14 +9,14 @@ namespace = true
 
 [project]
 name = "p2f-portal"
-version = "0.0.70"
+version = "0.0.71"
 description = "The Streamlit based data portal of the Past to Future project. "
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.13"
 dependencies = [
     "furl>=2.1.4",
     "openpyxl>=3.1.5",
-    "p2f-client-py>=0.0.46",
+    "p2f-client-py>=0.0.48",
     "plotly>=6.3.0",
     "python-dotenv>=1.1.0",
     "streamlit>=1.45.0",

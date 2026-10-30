@@ -145,10 +145,15 @@ if "datatype_id" in st.query_params.keys():
     datatype_data = get_datatype(datatype_id=datatype_id)
     datatype_statistics = get_datatype_statistics(datatype_id=datatype_id)
     st.header(datatype_data.measure)
-    dataset_metadata_L, dataset_metadata_R = st.columns([2,1])
+    dataset_metadata_L, dataset_metadata_R = st.columns([3,2])
     dataset_metadata_L.subheader(f"Method: {datatype_data.method}")
     dataset_metadata_L.subheader(f"Calibration: {datatype_data.calibration}")
     dataset_metadata_L.text(f"Units: {datatype_data.unit_of_measurement}")
+    match datatype_data.is_proxy:
+        case True:
+            dataset_metadata_L.text("This datatype is a proxy, meaning the value is derived from correlation to other data")
+        case False:
+            dataset_metadata_R.text("This datatype is not a proxy, meaning it is directly measured")
     dataset_metadata_R.metric("Total Records of this data type",
                               value=datatype_statistics.count_total)
     with dataset_metadata_R.container(border=True):

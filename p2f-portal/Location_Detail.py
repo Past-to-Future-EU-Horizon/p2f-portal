@@ -87,11 +87,28 @@ def get_related_datatypes(location_id):
     datatypes = client.harm_data_type.list_data_types(location_id=location_id)
     return datatypes
 
+def get_datatype_statistics(location_id):
+    logger.debug(f"{stack()[0][3]}({location_id})")
+    client = P2F_Client(hostname=P2F_API_HOSTNAME, 
+                        port=P2F_API_PORT, 
+                        https=P2F_API_HTTPS, 
+                        token=P2F_PORTAL_TOKEN, 
+                        # token_expiration=datetime(2026, 4, 30, 23, 59, 59), 
+                        email=P2F_PORTAL_EMAIL_ADDRESS)
+    datatype_data = client.harm_numerical.get_numeric_statistics(location_id=location_id)
+    return datatype_data
+
 if "location_id" in st.query_params.keys():
     location_id = st.query_params["location_id"]
     location_data = get_location(location_id=location_id)
+    location_stats = get_datatype_statistics(location_id=location_id)
     st.header(location_data.location_name)
-    st.markdown(f"Code: {location_data.location_code}  \nlocation_id: `{location_data.location_code}`")
+    loc_metadata_L, loc_metadata_R = st.columns([3, 2])
+    loc_metadata_L.markdown(f"Code: {location_data.location_code}")
+    loc_metadata_R.metric("Total records at this location", value=location_stats.count_total)
+    with loc_metadata_R.container(border=True):
+        st.text("location_id")
+        st.code(location_data.location_id)
 
 
     st.subheader("Related Datasets")

@@ -237,6 +237,7 @@ if "dataset_id" in st.query_params.keys():
                 for dtype_id in measure_suboptions_list:
                     with measure_columns[measure_suboptions_list.index(dtype_id)].container(border=True, width=250):
                         st.markdown(f"**{measure_suboptions[dtype_id].measure} ({measure_suboptions[dtype_id].unit_of_measurement})**  \nMethod: {measure_suboptions[dtype_id].method}  \nCalib: {measure_suboptions[dtype_id].calibration}  \n    {measure_suboptions[dtype_id].datatype_id}")
+                        st.link_button("See more about this datatype", url=f"/datatype-detail?datatype_id={dtype_id}")
                         st.checkbox(label="Include in graph", key=f"datatype_id::{dtype_id}", value=True)
                 # get the currently check boxes items from the session state dictionary
                 activated_datatypes = {x: y for x, y in st.session_state.items() if x.startswith("datatype_id::")}
